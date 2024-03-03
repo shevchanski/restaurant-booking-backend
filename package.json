@@ -1,0 +1,33 @@
+{
+  "name": "restaurant-booking-restapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon",
+    "prepare": "husky",
+    "commitlint": "commitlint --verbose --edit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/shevchanski/restaurant-booking-backend.git"
+  },
+  "author": "Oleksii Shevchenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shevchanski/restaurant-booking-backend/issues"
+  },
+  "homepage": "https://github.com/shevchanski/restaurant-booking-backend#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.3",
+    "@commitlint/config-conventional": "^19.0.3",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
