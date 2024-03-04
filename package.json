@@ -2,12 +2,13 @@
   "name": "restaurant-booking-restapi",
   "version": "1.0.0",
   "description": "",
-  "main": "",
+  "main": "src/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon",
+    "dev": "nodemon ./src/app.ts",
     "prepare": "husky",
-    "commitlint": "commitlint --verbose --edit"
+    "commitlint": "commitlint --verbose --edit",
+    "lint": "npx eslint . --ext .ts"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^19.0.3",
+    "@types/express": "^4.17.21",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
     "eslint": "^8.57.0",
@@ -29,5 +31,9 @@
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3"
   }
 }
