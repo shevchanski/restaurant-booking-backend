@@ -1,5 +1,6 @@
 import { WellKnownErrorTypes } from '../configs/error.config';
 import { responseStatus } from '../configs/resStatus.config';
+import { ControllerCallbeck, MdlwrCallback } from './global.types';
 
 interface IAPIError {
   message: string;
@@ -11,4 +12,6 @@ type IWellKnownError = {
   [key in WellKnownErrorTypes]: IAPIError;
 };
 
-export { IAPIError, IWellKnownError };
+type ErrorWrapperCallback = ControllerCallbeck | MdlwrCallback;
+
+export { IAPIError, IWellKnownError, ErrorWrapperCallback };
