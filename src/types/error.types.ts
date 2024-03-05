@@ -1,3 +1,4 @@
+import { WellKnownErrorTypes } from '../configs/error.config';
 import { responseStatus } from '../configs/resStatus.config';
 
 interface IAPIError {
@@ -6,4 +7,8 @@ interface IAPIError {
   subCode?: number;
 }
 
-export { IAPIError };
+type IWellKnownError = {
+  [key in WellKnownErrorTypes]: IAPIError;
+};
+
+export { IAPIError, IWellKnownError };
