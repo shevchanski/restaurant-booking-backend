@@ -21,7 +21,8 @@
 
     /* Type Checking */
     "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": false /* Allows to declare and use variable in global scope. */
+    "noImplicitAny": false /* Allows to declare and use variable in global scope. */,
+    "experimentalDecorators": true
   },
   "include": ["./src/**/*"]
 }
