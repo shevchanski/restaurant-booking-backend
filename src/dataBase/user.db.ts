@@ -1,8 +1,37 @@
-import { ReturnModelType, getModelForClass, prop } from '@typegoose/typegoose';
-import { IUser } from '../types/user.types';
-import passwordService from '../services/password.service';
+import {
+  ReturnModelType,
+  getModelForClass,
+  modelOptions,
+  prop
+} from '@typegoose/typegoose';
 
-class User implements IUser {
+import { UserSecureFields } from '../configs/db.config';
+import passwordService from '../services/password.service';
+import { IUser } from '../types/user.types';
+
+@modelOptions({
+  schemaOptions: {
+    toJSON: {
+      virtuals: true,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      transform(doc, ret, options) {
+        for (const fieldToDelete of UserSecureFields) {
+          delete ret[fieldToDelete];
+        }
+      }
+    },
+    toObject: {
+      virtuals: true,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      transform(doc, ret, options) {
+        for (const fieldToDelete of UserSecureFields) {
+          delete ret[fieldToDelete];
+        }
+      }
+    }
+  }
+})
+export class User implements IUser {
   @prop({ required: true })
   public firstName!: string;
 
