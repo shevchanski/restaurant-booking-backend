@@ -4,8 +4,6 @@ import errorWrapper from '../../../errors/errorWrapper';
 import { IRequest } from '../../../types/query.types';
 import userService from '../user.service';
 import { IUser } from '../../../types/user.types';
-import APIError from '../../../errors/APIError';
-import { responseStatus } from '../../../configs/resStatus.config';
 import WellKnownError from '../../../errors/WellKnownError';
 import { WellKnownErrorTypes } from '../../../configs/error.config';
 
@@ -26,7 +24,7 @@ const getUserDynamically = (
     });
 
     if (!foundUser) {
-      throw new APIError("User doesn't exist", responseStatus.NOT_FOUND);
+      throw new WellKnownError(WellKnownErrorTypes.RECORD_NOT_FOUND);
     }
 
     req.locals = {
