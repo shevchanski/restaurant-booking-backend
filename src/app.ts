@@ -8,8 +8,18 @@ import {
   globalErrorHandler,
   notFoundRouteHandler
 } from './errors/errorHandlers';
+import userRouter from './api/user/user.router';
+import mongoose from 'mongoose';
+import { DatabaseConfig } from './configs/db.config';
 
 const app = express();
+
+mongoose.set({ debug: true });
+mongoose.connect(DatabaseConfig.MONGO_PROD_URI);
+
+app.use(express.json()); // returns mdlwr to handle request with json data
+
+app.use('/users', userRouter);
 
 // for routes which is not supposed by our app, we use not-found router to throw an error
 app.use('*', notFoundRouteHandler);
