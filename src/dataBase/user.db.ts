@@ -3,16 +3,16 @@ import { IUser } from '../types/user.types';
 import passwordService from '../services/password.service';
 
 class User implements IUser {
-  @prop()
+  @prop({ required: true })
   public firstName!: string;
 
-  @prop()
+  @prop({ required: true })
   public lastName!: string;
 
-  @prop()
+  @prop({ required: true, unique: true })
   public email!: string;
 
-  @prop()
+  @prop({ required: true })
   public password!: string;
 
   public static async createUserWithHashedPassword(
