@@ -23,6 +23,13 @@ userRouter.put(
   userMdlwr.validateUserObjectDynamically('toUpdate'),
   userController.updateUser
 );
+userRouter.patch(
+  '/:userId/updateEmail',
+  userMdlwr.validateQueryParamUserId,
+  userMdlwr.validateUpdatedEmail,
+  userMdlwr.checkUserDuplicate(),
+  userController.updateUser
+);
 userRouter.delete(
   '/:userId',
   userMdlwr.validateQueryParamUserId,

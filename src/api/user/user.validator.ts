@@ -27,4 +27,12 @@ const CreatedUserObjectValidator = UpdatedUserObjectValidator.append<
     .regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/)
 });
 
-export { UpdatedUserObjectValidator, CreatedUserObjectValidator };
+const UpdatedEmailValidator = joi.object({
+  email: joi.string().required().email()
+});
+
+export {
+  UpdatedUserObjectValidator,
+  CreatedUserObjectValidator,
+  UpdatedEmailValidator
+};
