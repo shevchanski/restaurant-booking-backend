@@ -3,7 +3,6 @@ import { Response } from 'express';
 import errorWrapper from '../../../errors/errorWrapper';
 import APIError from '../../../errors/APIError';
 import { responseStatus } from '../../../configs/resStatus.config';
-import passwordService from '../../../services/password.service';
 import { IRequest } from '../../../types/query.types';
 import { IUser } from '../../../types/user.types';
 import userService from '../user.service';
@@ -18,10 +17,6 @@ const updateUser = errorWrapper(async (req: IRequest, res: Response) => {
       responseStatus.INTERNAL_ERROR
     );
   }
-
-  userObjectToUpdate.password = await passwordService.hashPassword(
-    userObjectToUpdate.password
-  );
 
   const updatedUser = await userService.updateUser(userId, userObjectToUpdate);
 

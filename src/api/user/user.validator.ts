@@ -1,11 +1,30 @@
 import joi from 'joi';
 import { IUser } from '../../types/user.types';
 
-const userObjectValidator = joi.object<IUser, true, IUser>({
-  firstName: joi.string().required(),
-  lastName: joi.string().required(),
-  email: joi.string().email().required(),
-  password: joi.string().required().min(8).max(20)
+const UpdatedUserObjectValidator = joi.object<
+  Omit<IUser, 'email' | 'password'>,
+  true,
+  Omit<IUser, 'email' | 'password'>
+>({
+  firstName: joi
+    .string()
+    .required()
+    .regex(/^[A-Z][a-z]+/),
+  lastName: joi
+    .string()
+    .required()
+    .regex(/^[A-Z][a-z]+/)
 });
 
-export { userObjectValidator };
+const CreatedUserObjectValidator = UpdatedUserObjectValidator.append<
+  IUser,
+  IUser
+>({
+  email: joi.string().email().required().lowercase(),
+  password: joi
+    .string()
+    .required()
+    .regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/)
+});
+
+export { UpdatedUserObjectValidator, CreatedUserObjectValidator };

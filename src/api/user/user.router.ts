@@ -7,7 +7,7 @@ const userRouter = Router();
 
 userRouter.post(
   '/',
-  userMdlwr.validateUserObject,
+  userMdlwr.validateUserObjectDynamically('toCreate'),
   userMdlwr.checkUserDuplicate(),
   userController.createUser
 );
@@ -20,8 +20,7 @@ userRouter.get(
 userRouter.put(
   '/:userId',
   userMdlwr.validateQueryParamUserId,
-  userMdlwr.validateUserObject,
-  userMdlwr.getUserDynamically(),
+  userMdlwr.validateUserObjectDynamically('toUpdate'),
   userController.updateUser
 );
 userRouter.delete(
