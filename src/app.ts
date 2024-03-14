@@ -14,8 +14,10 @@ import { DatabaseConfig } from './configs/db.config';
 
 const app = express();
 
-mongoose.set({ debug: true });
-mongoose.connect(DatabaseConfig.MONGO_PROD_URI);
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.set({ debug: true });
+  mongoose.connect(DatabaseConfig.MONGO_PROD_URI);
+}
 
 app.use(express.json()); // returns mdlwr to handle request with json data
 
@@ -27,7 +29,13 @@ app.use('*', notFoundRouteHandler);
 // app will use the handler as global try-catch handler
 app.use(globalErrorHandler);
 
-app.listen(serverConfig.PORT, () => {
-  //eslint-disable-next-line no-console
-  console.log(`Server is listening on http://localhost:${serverConfig.PORT}/`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(serverConfig.PORT, () => {
+    //eslint-disable-next-line no-console
+    console.log(
+      `Server is listening on http://localhost:${serverConfig.PORT}/`
+    );
+  });
+}
+
+export default app;
