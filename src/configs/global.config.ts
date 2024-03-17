@@ -3,4 +3,7 @@ const TokenConfig = {
   REFRESH_SECRET: process.env.REFRESH_TOKEN_SECRET || 'refreshWord'
 };
 
-export { TokenConfig };
+const PasswordRegex =
+  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/;
+
+export { TokenConfig, PasswordRegex };

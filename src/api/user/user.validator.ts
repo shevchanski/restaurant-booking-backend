@@ -1,5 +1,6 @@
 import joi from 'joi';
 import { IUser } from '../../types/user.types';
+import { PasswordRegex } from '../../configs/global.config';
 
 const UpdatedUserObjectValidator = joi.object<
   Omit<IUser, 'email' | 'password'>,
@@ -21,10 +22,7 @@ const CreatedUserObjectValidator = UpdatedUserObjectValidator.append<
   IUser
 >({
   email: joi.string().email().required().lowercase(),
-  password: joi
-    .string()
-    .required()
-    .regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/)
+  password: joi.string().required().regex(PasswordRegex)
 });
 
 const UpdatedEmailValidator = joi.object({
