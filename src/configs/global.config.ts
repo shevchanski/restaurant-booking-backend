@@ -6,4 +6,8 @@ const TokenConfig = {
 const PasswordRegex =
   /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/;
 
-export { TokenConfig, PasswordRegex };
+enum GlobalRoutes {
+  USERS = '/users'
+}
+
+export { TokenConfig, PasswordRegex, GlobalRoutes };
