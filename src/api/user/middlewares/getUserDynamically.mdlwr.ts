@@ -27,10 +27,7 @@ const getUserDynamically = (
       throw new WellKnownError(WellKnownErrorTypes.RECORD_NOT_FOUND);
     }
 
-    req.locals = {
-      ...req.locals,
-      user: foundUser
-    };
+    req.user = foundUser;
 
     next();
   });

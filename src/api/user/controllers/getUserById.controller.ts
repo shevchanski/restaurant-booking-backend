@@ -6,7 +6,7 @@ import { responseStatus } from '../../../configs/resStatus.config';
 import { IRequest } from '../../../types/query.types';
 
 const getUserById = errorWrapper(async (req: IRequest, res: Response) => {
-  const { user } = req.locals;
+  const { user } = req;
 
   if (!user) {
     throw new APIError(
