@@ -11,4 +11,20 @@ enum GlobalRoutes {
   AUTH = '/auth'
 }
 
-export { TokenConfig, PasswordRegex, GlobalRoutes };
+enum UserSubroutes {
+  ROOT = '/',
+  BY_USER_ID = '/:userId',
+  UPDATE_EMAIL = `${BY_USER_ID}/updateEmail`
+}
+
+enum AuthSubroutes {
+  ROOT = '/'
+}
+
+export {
+  TokenConfig,
+  PasswordRegex,
+  GlobalRoutes,
+  UserSubroutes,
+  AuthSubroutes
+};
