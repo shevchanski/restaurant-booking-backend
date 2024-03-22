@@ -4,7 +4,7 @@ import { IOAuth } from '../types/oauth.types';
 
 class OAuth implements IOAuth {
   @prop({
-    type: () => User,
+    ref: () => User,
     required: true
   })
   public _user_id!: Ref<User>;
