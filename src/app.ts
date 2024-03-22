@@ -12,6 +12,7 @@ import {
 import serverConfig from './configs/server.config';
 import { DatabaseConfig } from './configs/db.config';
 import { GlobalRoutes } from './configs/global.config';
+import authRouter from './api/auth/auth.router';
 
 const app = express();
 
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(express.json()); // returns mdlwr to handle request with json data
 
 app.use(GlobalRoutes.USERS, userRouter);
+app.use(GlobalRoutes.AUTH, authRouter);
 
 // for routes which is not supposed by our app, we use not-found router to throw an error
 app.use('*', notFoundRouteHandler);
