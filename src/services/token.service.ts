@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import { IUser } from '../types/user.types';
-import { TokenConfig } from '../configs/global.config';
+import { TokenConfig, TokenTypes } from '../configs/global.config';
 import { TokenPair } from '../types/global.types';
 import APIError from '../errors/APIError';
 import { responseStatus } from '../configs/resStatus.config';
@@ -23,4 +23,20 @@ function createTokenPair(tokenPayload: IUser): TokenPair {
   return { accessToken, refreshToken };
 }
 
-export default { createTokenPair };
+function verifyToken(token: string, tokenType: TokenTypes = TokenTypes.ACCESS) {
+  try {
+    jwt.verify(
+      token,
+      tokenType === TokenTypes.ACCESS
+        ? TokenConfig.ACCESS_SECRET
+        : TokenConfig.REFRESH_SECRET
+    );
+  } catch (error) {
+    throw new APIError(
+      error instanceof Error ? error.message : 'JWT token is not valid',
+      responseStatus.NOT_AUTHORIZED
+    );
+  }
+}
+
+export default { createTokenPair, verifyToken };

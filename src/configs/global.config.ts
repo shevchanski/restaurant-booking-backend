@@ -21,10 +21,19 @@ enum AuthSubroutes {
   ROOT = '/'
 }
 
+const TokenRegex = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
+
+enum TokenTypes {
+  ACCESS = 'ACCESS',
+  REFRESH = 'REFRESH'
+}
+
 export {
   TokenConfig,
   PasswordRegex,
   GlobalRoutes,
   UserSubroutes,
-  AuthSubroutes
+  AuthSubroutes,
+  TokenRegex,
+  TokenTypes
 };
