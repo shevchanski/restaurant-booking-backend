@@ -12,7 +12,7 @@ router.post(
   authMdlwr.validateLoginData,
   userMdlwr.getUserDynamically('body', 'email'),
   authMdlwr.loginUserWithEmail,
-  authController.authenticateUser
+  authController.assignTokensToUser
 );
 
 export default router;

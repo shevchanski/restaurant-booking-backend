@@ -1,3 +1,3 @@
-import authenticateUser from './authenticateUser.controller';
+import assignTokensToUser from './assignTokensToUser.controller';
 
-export default { authenticateUser };
+export default { assignTokensToUser };
