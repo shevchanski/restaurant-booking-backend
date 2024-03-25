@@ -11,8 +11,14 @@ function createTokenPair(tokenPayload: IUser): TokenPair {
     throw new APIError('Token payload is required', responseStatus.BAD_REQUEST);
   }
 
-  const accessToken = jwt.sign(tokenPayload, TokenConfig.ACCESS_SECRET);
-  const refreshToken = jwt.sign(tokenPayload, TokenConfig.REFRESH_SECRET);
+  const accessToken = jwt.sign(tokenPayload, TokenConfig.ACCESS_SECRET, {
+    //  expiresIn: '2m' // this expiration time is used to test correct work
+    expiresIn: '2d'
+  });
+  const refreshToken = jwt.sign(tokenPayload, TokenConfig.REFRESH_SECRET, {
+    //  expiresIn: '30m' // this expiration time is used to test correct work
+    expiresIn: '30d'
+  });
 
   return { accessToken, refreshToken };
 }
