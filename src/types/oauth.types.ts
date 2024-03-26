@@ -7,4 +7,8 @@ interface IOAuth {
   _user_id: Ref<User>;
 }
 
-export { IOAuth };
+type TokenFindParams = {
+  [key in keyof IOAuth]?: string;
+};
+
+export { IOAuth, TokenFindParams };
