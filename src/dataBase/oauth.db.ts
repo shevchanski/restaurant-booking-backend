@@ -1,7 +1,11 @@
-import { Ref, getModelForClass, prop } from '@typegoose/typegoose';
+import { Ref, getModelForClass, pre, prop } from '@typegoose/typegoose';
 import { User } from './user.db';
 import { IOAuth } from '../types/oauth.types';
 
+// pre-hook which is used to populate user by _user_id at action 'findOne'
+@pre<OAuth>('findOne', function () {
+  this.populate('user');
+})
 class OAuth implements IOAuth {
   @prop({
     ref: () => User,
@@ -21,7 +25,7 @@ class OAuth implements IOAuth {
     localField: '_user_id',
     justOne: true
   })
-  public user!: Ref<User>;
+  public user?: Ref<User>;
 }
 
 const OAuthModel = getModelForClass(OAuth);
