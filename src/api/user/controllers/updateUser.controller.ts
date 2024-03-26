@@ -8,17 +8,20 @@ import { IUser } from '../../../types/user.types';
 import userService from '../user.service';
 
 const updateUser = errorWrapper(async (req: IRequest, res: Response) => {
-  const userId = req.params?.userId;
+  const user = req.user;
   const userObjectToUpdate: IUser = req.locals?.validatedUserObject;
 
-  if (!userObjectToUpdate || !userId) {
+  if (!userObjectToUpdate || !user) {
     throw new APIError(
       'Necessary data is not provided',
       responseStatus.INTERNAL_ERROR
     );
   }
 
-  const updatedUser = await userService.updateUser(userId, userObjectToUpdate);
+  const updatedUser = await userService.updateUser(
+    user._id.toString(),
+    userObjectToUpdate
+  );
 
   if (!updatedUser) {
     throw new APIError('Such user does not exist', responseStatus.BAD_REQUEST);

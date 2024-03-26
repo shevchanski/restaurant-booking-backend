@@ -1,4 +1,5 @@
-import UserModel from '../../dataBase/user.db';
+import { DocumentType } from '@typegoose/typegoose';
+import UserModel, { User } from '../../dataBase/user.db';
 import { IUser, UserSearchQuery } from '../../types/user.types';
 
 function createUser(userObject: IUser) {
@@ -9,8 +10,8 @@ function updateUser(userId: string, userToUpdate: IUser) {
   return UserModel.findByIdAndUpdate(userId, userToUpdate, { new: true });
 }
 
-function deleteUser(userId: string) {
-  return UserModel.findByIdAndDelete(userId);
+function deleteUser(userToDelete: DocumentType<User>) {
+  return userToDelete.deleteOne();
 }
 
 function getUserByParam(searchParams: UserSearchQuery) {

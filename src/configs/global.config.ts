@@ -14,7 +14,7 @@ enum GlobalRoutes {
 enum UserSubroutes {
   ROOT = '/',
   BY_USER_ID = '/:userId',
-  UPDATE_EMAIL = `${BY_USER_ID}/updateEmail`
+  UPDATE_EMAIL = `/updateEmail`
 }
 
 enum AuthSubroutes {
