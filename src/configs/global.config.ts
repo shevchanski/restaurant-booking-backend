@@ -18,7 +18,8 @@ enum UserSubroutes {
 }
 
 enum AuthSubroutes {
-  ROOT = '/'
+  ROOT = '/',
+  REFRESH_TOKENS = '/refreshTokens'
 }
 
 const TokenRegex = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
