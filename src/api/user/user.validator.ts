@@ -17,20 +17,24 @@ const UpdatedUserObjectValidator = joi.object<
     .regex(/^[A-Z][a-z]+/)
 });
 
+const PasswordValidator = joi.string().required().regex(PasswordRegex);
+
+const EmailValidator = joi.string().email().required().lowercase();
+
 const CreatedUserObjectValidator = UpdatedUserObjectValidator.append<
   IUser,
   IUser
 >({
-  email: joi.string().email().required().lowercase(),
-  password: joi.string().required().regex(PasswordRegex)
+  email: EmailValidator,
+  password: PasswordValidator
 });
 
-const UpdatedEmailValidator = joi.object({
-  email: joi.string().required().email()
+const UpdatedUserEmailObjectValidator = joi.object({
+  email: EmailValidator
 });
 
 export {
   UpdatedUserObjectValidator,
   CreatedUserObjectValidator,
-  UpdatedEmailValidator
+  UpdatedUserEmailObjectValidator
 };
