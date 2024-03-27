@@ -14,7 +14,7 @@ enum GlobalRoutes {
 enum UserSubroutes {
   ROOT = '/',
   BY_USER_ID = '/:userId',
-  UPDATE_EMAIL = `/updateEmail`
+  UPDATE_EMAIL = '/updateEmail'
 }
 
 enum AuthSubroutes {
@@ -29,6 +29,12 @@ enum TokenTypes {
   REFRESH = 'REFRESH'
 }
 
+enum UserValidationType {
+  CREATE_USER = 'CREATE_USER',
+  UPDATE_USER = 'UPDATE_USER',
+  UPDATE_EMAIL = 'UPDATE_EMAIL'
+}
+
 export {
   TokenConfig,
   PasswordRegex,
@@ -36,5 +42,6 @@ export {
   UserSubroutes,
   AuthSubroutes,
   TokenRegex,
-  TokenTypes
+  TokenTypes,
+  UserValidationType
 };
