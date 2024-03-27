@@ -9,7 +9,7 @@ import userService from '../user.service';
 
 const updateUser = errorWrapper(async (req: IRequest, res: Response) => {
   const user = req.user;
-  const userObjectToUpdate: IUser = req.locals?.validatedUserObject;
+  const userObjectToUpdate: IUser = req.locals?.validatedUserData;
 
   if (!userObjectToUpdate || !user) {
     throw new APIError(
