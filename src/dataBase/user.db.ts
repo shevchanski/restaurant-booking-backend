@@ -1,4 +1,5 @@
 import {
+  DocumentType,
   ReturnModelType,
   getModelForClass,
   modelOptions,
@@ -53,6 +54,13 @@ export class User implements IUser {
     );
 
     return this.create(userObject);
+  }
+
+  public async comparePassword(
+    this: DocumentType<User>,
+    plainPassword: string
+  ) {
+    return passwordService.comparePasswords(plainPassword, this.password);
   }
 }
 
