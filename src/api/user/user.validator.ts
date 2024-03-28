@@ -33,8 +33,14 @@ const UpdatedUserEmailObjectValidator = joi.object({
   email: EmailValidator
 });
 
+const UpdatedUserPasswordValidator = joi.object({
+  oldPassword: PasswordValidator,
+  newPassword: PasswordValidator
+});
+
 export {
   UpdatedUserObjectValidator,
   CreatedUserObjectValidator,
-  UpdatedUserEmailObjectValidator
+  UpdatedUserEmailObjectValidator,
+  UpdatedUserPasswordValidator
 };

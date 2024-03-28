@@ -10,7 +10,8 @@ import WellKnownError from '../../../errors/WellKnownError';
 import {
   CreatedUserObjectValidator,
   UpdatedUserEmailObjectValidator,
-  UpdatedUserObjectValidator
+  UpdatedUserObjectValidator,
+  UpdatedUserPasswordValidator
 } from '../user.validator';
 import { IRequest } from '../../../types/query.types';
 
@@ -37,6 +38,10 @@ const validateUserObjectDynamically = (
 
       case UserValidationType.UPDATE_EMAIL:
         dataValidator = UpdatedUserEmailObjectValidator;
+        break;
+
+      case UserValidationType.UPDATE_PASS:
+        dataValidator = UpdatedUserPasswordValidator;
         break;
 
       default:

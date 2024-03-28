@@ -32,7 +32,8 @@ enum TokenTypes {
 enum UserValidationType {
   CREATE_USER = 'CREATE_USER',
   UPDATE_USER = 'UPDATE_USER',
-  UPDATE_EMAIL = 'UPDATE_EMAIL'
+  UPDATE_EMAIL = 'UPDATE_EMAIL',
+  UPDATE_PASS = 'UPDATE_PASS'
 }
 
 export {
