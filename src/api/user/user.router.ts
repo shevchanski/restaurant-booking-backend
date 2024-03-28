@@ -42,4 +42,12 @@ userRouter.delete(
   userController.deleteUser
 );
 
+userRouter.patch(
+  UserSubroutes.UPDATE_PASS,
+  userMdlwr.validateUserObjectDynamically(UserValidationType.UPDATE_PASS),
+  authMdlwr.authorizeUser,
+  userMdlwr.checkUpdatedPassword,
+  userController.updateUserPassword
+);
+
 export default userRouter;
