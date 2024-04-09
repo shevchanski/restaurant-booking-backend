@@ -20,7 +20,7 @@ const createUserController = errorWrapper(
 
     const createdUser = await userService.createUser(userToCreate);
 
-    res.status(responseStatus.OK).json({ data: createdUser });
+    res.status(responseStatus.CREATED).json({ user: createdUser });
   }
 );
 

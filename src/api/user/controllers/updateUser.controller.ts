@@ -27,7 +27,7 @@ const updateUser = errorWrapper(async (req: IRequest, res: Response) => {
     throw new APIError('Such user does not exist', responseStatus.BAD_REQUEST);
   }
 
-  res.status(responseStatus.OK).json({ data: updatedUser });
+  res.status(responseStatus.OK).json({ user: updatedUser });
 });
 
 export default updateUser;

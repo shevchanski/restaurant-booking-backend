@@ -15,7 +15,7 @@ const getUserById = errorWrapper(async (req: IRequest, res: Response) => {
     );
   }
 
-  res.status(responseStatus.OK).json({ data: user });
+  res.status(responseStatus.OK).json({ user });
 });
 
 export default getUserById;
