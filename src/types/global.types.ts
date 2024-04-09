@@ -8,4 +8,9 @@ type MdlwrCallback = (
 
 type ControllerCallbeck = (req: Request, res: Response) => Promise<any> | any;
 
-export { MdlwrCallback, ControllerCallbeck };
+type TokenPair = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export { MdlwrCallback, ControllerCallbeck, TokenPair };

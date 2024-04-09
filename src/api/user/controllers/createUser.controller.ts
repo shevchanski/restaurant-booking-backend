@@ -9,7 +9,7 @@ import { IRequest } from '../../../types/query.types';
 const createUserController = errorWrapper(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (req: IRequest, res: Response) => {
-    const userToCreate = req.locals?.validatedUserObject;
+    const userToCreate = req.locals?.validatedUserData;
 
     if (!userToCreate) {
       throw new APIError(

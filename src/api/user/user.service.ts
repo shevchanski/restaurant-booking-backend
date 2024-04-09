@@ -1,20 +1,32 @@
-import UserModel from '../../dataBase/user.db';
+import { DocumentType } from '@typegoose/typegoose';
+import UserModel, { User } from '../../dataBase/user.db';
 import { IUser, UserSearchQuery } from '../../types/user.types';
 
 function createUser(userObject: IUser) {
   return UserModel.createUserWithHashedPassword(userObject);
 }
 
-function updateUser(userId: string, userToUpdate: IUser) {
+function updateUser(userId: string, userToUpdate: Omit<IUser, 'password'>) {
   return UserModel.findByIdAndUpdate(userId, userToUpdate, { new: true });
 }
 
-function deleteUser(userId: string) {
-  return UserModel.findByIdAndDelete(userId);
+function deleteUser(userToDelete: DocumentType<User>) {
+  return userToDelete.deleteOne();
 }
 
 function getUserByParam(searchParams: UserSearchQuery) {
   return UserModel.findOne(searchParams);
 }
 
-export default { createUser, updateUser, deleteUser, getUserByParam };
+function updateUserPassword(newPassword: string, user: DocumentType<User>) {
+  user.password = newPassword;
+  return user.save();
+}
+
+export default {
+  createUser,
+  updateUser,
+  deleteUser,
+  getUserByParam,
+  updateUserPassword
+};
