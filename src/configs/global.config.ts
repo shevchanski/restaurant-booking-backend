@@ -8,7 +8,8 @@ const PasswordRegex =
 
 enum GlobalRoutes {
   USERS = '/users',
-  AUTH = '/auth'
+  AUTH = '/auth',
+  RESTAURANTS = '/restaurants'
 }
 
 enum UserSubroutes {
@@ -37,13 +38,18 @@ enum UserValidationType {
   UPDATE_PASS = 'UPDATE_PASS'
 }
 
+enum ResSubroutes {
+  ROOT = '/'
+}
+
 export {
-  TokenConfig,
-  PasswordRegex,
-  GlobalRoutes,
-  UserSubroutes,
   AuthSubroutes,
+  GlobalRoutes,
+  PasswordRegex,
+  ResSubroutes,
+  TokenConfig,
   TokenRegex,
   TokenTypes,
+  UserSubroutes,
   UserValidationType
 };
