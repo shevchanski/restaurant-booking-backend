@@ -1,6 +1,7 @@
 import { DocumentType } from '@typegoose/typegoose';
 import { Request } from 'express';
 
+import { Restaurant } from '../dataBase/restaurant.db';
 import { User } from '../dataBase/user.db';
 
 interface IRequest extends Request {
@@ -8,6 +9,7 @@ interface IRequest extends Request {
   //	eslint-disable-next-line @typescript-eslint/no-explicit-any
   locals?: any;
   user?: DocumentType<User>;
+  restaurant?: DocumentType<Restaurant>;
 }
 
 export { IRequest };

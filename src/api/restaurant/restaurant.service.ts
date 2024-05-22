@@ -1,3 +1,4 @@
+import { DocumentType } from '@typegoose/typegoose';
 import RestaurantModel, { Restaurant } from '../../dataBase/restaurant.db';
 
 function insertRestaurant(restaurantObject: Restaurant) {
@@ -5,4 +6,16 @@ function insertRestaurant(restaurantObject: Restaurant) {
   return newRes.save();
 }
 
-export default { insertRestaurant };
+function updateResWithObject(
+  updatedResObject: Restaurant,
+  resInstanceToUpdate: DocumentType<Restaurant>
+) {
+  resInstanceToUpdate.set(updatedResObject);
+  return resInstanceToUpdate.save();
+}
+
+function findRestaurant(restaurantId: string) {
+  return RestaurantModel.findById(restaurantId);
+}
+
+export default { insertRestaurant, updateResWithObject, findRestaurant };

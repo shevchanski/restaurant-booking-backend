@@ -39,11 +39,13 @@ enum UserValidationType {
 }
 
 enum ResSubroutes {
-  ROOT = '/'
+  ROOT = '/',
+  BY_RES_ID = '/:restaurantId'
 }
 
 enum InstanceParam {
-  USER_ID = 'userId'
+  USER_ID = 'userId',
+  RES_ID = 'restaurantId'
 }
 
 export {

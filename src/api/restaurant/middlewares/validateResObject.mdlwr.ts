@@ -6,7 +6,7 @@ import errorWrapper from '../../../errors/errorWrapper';
 import { IRequest } from '../../../types/query.types';
 import { RestObjectValidator } from '../restaurant.validator';
 
-const validatedResObject = errorWrapper(
+export const validatedResObject = errorWrapper(
   (req: IRequest, res: Response, next: NextFunction) => {
     const resObject = req.body;
 
@@ -25,5 +25,3 @@ const validatedResObject = errorWrapper(
     next();
   }
 );
-
-export default validatedResObject;

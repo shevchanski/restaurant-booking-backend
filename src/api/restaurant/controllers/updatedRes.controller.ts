@@ -1,23 +1,30 @@
 import { Response } from 'express';
+
 import { responseStatus } from '../../../configs/resStatus.config';
 import APIError from '../../../errors/APIError';
 import errorWrapper from '../../../errors/errorWrapper';
 import { IRequest } from '../../../types/query.types';
 import restaurantService from '../restaurant.service';
 
-export const createRes = errorWrapper(async (req: IRequest, res: Response) => {
+export const updateRes = errorWrapper(async (req: IRequest, res: Response) => {
+  const { restaurant } = req;
   const validatedResObject = req.locals?.validatedResObject;
 
-  if (!validatedResObject || !Object.keys(validatedResObject).length) {
+  if (
+    !restaurant ||
+    !validatedResObject ||
+    !Object.keys(validatedResObject).length
+  ) {
     throw new APIError(
-      'Problems on the server side.',
+      'Missing restaurant object',
       responseStatus.INTERNAL_ERROR
     );
   }
 
-  const restaurant = await restaurantService.insertRestaurant(
-    validatedResObject
+  const response = await restaurantService.updateResWithObject(
+    validatedResObject,
+    restaurant
   );
 
-  res.status(responseStatus.CREATED).json({ restaurant });
+  res.status(responseStatus.OK).json({ restaurant: response });
 });
