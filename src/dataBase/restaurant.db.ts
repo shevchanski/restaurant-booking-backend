@@ -2,7 +2,7 @@ import { getModelForClass, prop } from '@typegoose/typegoose';
 
 export class Restaurant {
   @prop({ type: () => String, required: true, trim: true })
-  public name!: string;
+  public title!: string;
 
   @prop({ type: () => String, trim: true })
   public description?: string;
