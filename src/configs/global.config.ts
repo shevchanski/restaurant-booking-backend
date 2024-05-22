@@ -48,12 +48,18 @@ enum InstanceParam {
   RES_ID = 'restaurantId'
 }
 
+enum SortOption {
+  ASC = 'ASC', //ascending
+  DESC = 'DESC' //descending
+}
+
 export {
   AuthSubroutes,
   GlobalRoutes,
   InstanceParam,
   PasswordRegex,
   ResSubroutes,
+  SortOption,
   TokenConfig,
   TokenRegex,
   TokenTypes,
