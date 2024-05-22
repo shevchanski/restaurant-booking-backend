@@ -2,13 +2,19 @@ import express from 'express';
 
 import { InstanceParam, ResSubroutes } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
-import { createRes, returnRes, updateRes } from './controllers';
-import { getResById, validatedResObject } from './middlewares/';
+import { createRes, returnAllRests, returnRes, updateRes } from './controllers';
+import {
+  getResById,
+  validateResPagination,
+  validatedResObject
+} from './middlewares/';
 
 const router = express.Router();
 
 // [THOUGHTS] think about checking duplicate with geo-location
 router.post(ResSubroutes.ROOT, validatedResObject, createRes);
+
+router.get(ResSubroutes.ROOT, validateResPagination, returnAllRests);
 
 router.put(
   ResSubroutes.BY_RES_ID,
