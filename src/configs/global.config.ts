@@ -42,9 +42,14 @@ enum ResSubroutes {
   ROOT = '/'
 }
 
+enum InstanceParam {
+  USER_ID = 'userId'
+}
+
 export {
   AuthSubroutes,
   GlobalRoutes,
+  InstanceParam,
   PasswordRegex,
   ResSubroutes,
   TokenConfig,
