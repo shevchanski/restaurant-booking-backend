@@ -1,18 +1,19 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import express from 'express';
 import mongoose from 'mongoose';
 
 dotenv.config();
 
+import authRouter from './api/auth/auth.router';
 import userRouter from './api/user/user.router';
+import { DatabaseConfig } from './configs/db.config';
+import { GlobalRoutes } from './configs/global.config';
+import serverConfig from './configs/server.config';
 import {
   globalErrorHandler,
   notFoundRouteHandler
 } from './errors/errorHandlers';
-import serverConfig from './configs/server.config';
-import { DatabaseConfig } from './configs/db.config';
-import { GlobalRoutes } from './configs/global.config';
-import authRouter from './api/auth/auth.router';
+import RouteLogger from './middlewares/RouteLogger';
 
 const app = express();
 
@@ -22,6 +23,8 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(express.json()); // returns mdlwr to handle request with json data
+
+app.use(RouteLogger);
 
 app.use(GlobalRoutes.USERS, userRouter);
 app.use(GlobalRoutes.AUTH, authRouter);
