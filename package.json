@@ -11,7 +11,8 @@
     "lint": "npx eslint . --ext .ts",
     "cm": "cz",
     "build": "rimraf dist && npx tsc",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
   },
   "repository": {
     "type": "git",
