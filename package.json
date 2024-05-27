@@ -12,7 +12,8 @@
     "cm": "cz",
     "build": "rimraf dist && npx tsc",
     "start": "node dist/app.js",
-    "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
+    "deploy": "rimraf dist && npx tsc && vercel",
+    "db:seed-rests": "dotenv run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
   },
   "repository": {
     "type": "git",
@@ -55,6 +56,7 @@
     "@dotenvx/dotenvx": "^0.44.0",
     "@typegoose/typegoose": "^12.2.0",
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
