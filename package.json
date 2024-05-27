@@ -4,12 +4,14 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
-    "test": "jest",
-    "dev": "nodemon ./src/app.ts",
+    "test": "dotenvx run -f .env.test -- jest",
+    "dev": "dotenvx run -f .env.local -- nodemon ./src/app.ts",
     "prepare": "husky",
     "commitlint": "commitlint --verbose --edit",
     "lint": "npx eslint . --ext .ts",
-    "cm": "cz"
+    "cm": "cz",
+    "build": "rimraf dist && npx tsc",
+    "start": "node dist/app.js"
   },
   "repository": {
     "type": "git",
@@ -46,13 +48,14 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^0.44.0",
     "@typegoose/typegoose": "^12.2.0",
     "bcrypt": "^5.1.1",
-    "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.2.1"
+    "mongoose": "^8.2.1",
+    "rimraf": "^5.0.7"
   },
   "config": {
     "commitizen": {

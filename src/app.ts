@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from '@dotenvx/dotenvx';
 import express from 'express';
 import mongoose from 'mongoose';
 
@@ -14,6 +14,7 @@ import {
   globalErrorHandler,
   notFoundRouteHandler
 } from './errors/errorHandlers';
+import RouteLogger from './middlewares/RouteLogger';
 
 const app = express();
 
@@ -23,6 +24,8 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(express.json()); // returns mdlwr to handle request with json data
+
+app.use(RouteLogger);
 
 app.use(GlobalRoutes.USERS, userRouter);
 app.use(GlobalRoutes.AUTH, authRouter);
