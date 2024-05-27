@@ -8,7 +8,8 @@ const PasswordRegex =
 
 enum GlobalRoutes {
   USERS = '/users',
-  AUTH = '/auth'
+  AUTH = '/auth',
+  RESTAURANTS = '/restaurants'
 }
 
 enum UserSubroutes {
@@ -37,13 +38,31 @@ enum UserValidationType {
   UPDATE_PASS = 'UPDATE_PASS'
 }
 
+enum ResSubroutes {
+  ROOT = '/',
+  BY_RES_ID = '/:restaurantId'
+}
+
+enum InstanceParam {
+  USER_ID = 'userId',
+  RES_ID = 'restaurantId'
+}
+
+enum SortOption {
+  ASC = 'ASC', //ascending
+  DESC = 'DESC' //descending
+}
+
 export {
-  TokenConfig,
-  PasswordRegex,
-  GlobalRoutes,
-  UserSubroutes,
   AuthSubroutes,
+  GlobalRoutes,
+  InstanceParam,
+  PasswordRegex,
+  ResSubroutes,
+  SortOption,
+  TokenConfig,
   TokenRegex,
   TokenTypes,
+  UserSubroutes,
   UserValidationType
 };

@@ -1,0 +1,36 @@
+import Joi from 'joi';
+
+import RestaurantModel, {
+  Address,
+  Restaurant
+} from '../../dataBase/restaurant.db';
+import { RestaurantPaginationOptions } from '../../types/restaurant.types';
+import { PaginationValidator } from '../../validators';
+
+const AddressValidator = Joi.object<Address>({
+  city: Joi.string().required().trim(),
+  country: Joi.string().required().trim(),
+  post_code: Joi.string().required().trim(),
+  street_address: Joi.string().required().trim(),
+  region: Joi.string().trim()
+});
+
+const RestObjectValidator = Joi.object<Restaurant>({
+  title: Joi.string().required().trim(),
+  description: Joi.string().optional().trim(),
+  website: Joi.string().uri().optional().trim(),
+  address: AddressValidator,
+  cuisine: Joi.array().items(Joi.string().required().trim()).required(),
+  rating: Joi.number().required().min(0).max(5).precision(1),
+  phoneNumber: Joi.string().optional().trim()
+}).required();
+
+const ResPaginationValidator =
+  PaginationValidator.append<RestaurantPaginationOptions>({
+    sortBy: Joi.string()
+      .required()
+      .valid(...Object.keys(RestaurantModel.schema.paths))
+      .default('createdAt')
+  });
+
+export { ResPaginationValidator, RestObjectValidator };

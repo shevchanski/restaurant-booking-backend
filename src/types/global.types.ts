@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { SortOption } from '../configs/global.config';
 /*eslint-disable @typescript-eslint/no-explicit-any */
 type MdlwrCallback = (
   req: Request,
@@ -13,4 +14,11 @@ type TokenPair = {
   refreshToken: string;
 };
 
-export { MdlwrCallback, ControllerCallbeck, TokenPair };
+interface PaginationOptions {
+  page: number;
+  perPage: number;
+  sortOption: SortOption;
+  searchTerm: string;
+}
+
+export { ControllerCallbeck, MdlwrCallback, PaginationOptions, TokenPair };

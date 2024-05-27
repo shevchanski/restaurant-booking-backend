@@ -1,9 +1,14 @@
 import { Router } from 'express';
 
-import userMdlwr from './middlewares';
-import userController from './controllers';
-import { UserSubroutes, UserValidationType } from '../../configs/global.config';
+import {
+  InstanceParam,
+  UserSubroutes,
+  UserValidationType
+} from '../../configs/global.config';
+import { validateQueryParam } from '../../middlewares';
 import authMdlwr from '../auth/middlewares';
+import userController from './controllers';
+import userMdlwr from './middlewares';
 
 const userRouter = Router();
 
@@ -16,7 +21,7 @@ userRouter.post(
 
 userRouter.get(
   UserSubroutes.BY_USER_ID,
-  userMdlwr.validateQueryParamUserId,
+  validateQueryParam(InstanceParam.USER_ID),
   userMdlwr.getUserDynamically(),
   userController.getUserById
 );

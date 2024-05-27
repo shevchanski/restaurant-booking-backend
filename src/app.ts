@@ -1,10 +1,11 @@
-import dotenv from '@dotenvx/dotenvx';
+import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 
 dotenv.config();
 
 import authRouter from './api/auth/auth.router';
+import resRouter from './api/restaurant/res.router';
 import userRouter from './api/user/user.router';
 import { DatabaseConfig } from './configs/db.config';
 import { GlobalRoutes } from './configs/global.config';
@@ -28,6 +29,7 @@ app.use(RouteLogger);
 
 app.use(GlobalRoutes.USERS, userRouter);
 app.use(GlobalRoutes.AUTH, authRouter);
+app.use(GlobalRoutes.RESTAURANTS, resRouter);
 
 // for routes which is not supposed by our app, we use not-found router to throw an error
 app.use('*', notFoundRouteHandler);
