@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from '@dotenvx/dotenvx';
 import express from 'express';
 import mongoose from 'mongoose';
 
