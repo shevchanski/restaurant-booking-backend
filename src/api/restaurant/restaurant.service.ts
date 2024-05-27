@@ -3,6 +3,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import { SortOption } from '../../configs/global.config';
 import RestaurantModel, { Restaurant } from '../../dataBase/restaurant.db';
 import { RestaurantPaginationOptions } from '../../types/restaurant.types';
+import generateSearchQuery from '../../utils/generateSearchQuery';
 
 function insertRestaurant(restaurantObject: Restaurant) {
   const newRes = new RestaurantModel(restaurantObject);
@@ -28,17 +29,20 @@ async function findAllRestaurants(
     page = 1,
     perPage = 20,
     sortOption = SortOption.ASC,
-    sortBy = 'title'
+    sortBy = 'createdAt',
+    searchTerm = ''
   } = paginationOptions;
 
   const docsToSkip = (page - 1) * perPage;
 
+  const query = generateSearchQuery(searchTerm);
+
   const [foundRests, totalAmount] = await Promise.all([
-    RestaurantModel.find()
+    RestaurantModel.find(query)
       .skip(docsToSkip)
       .limit(perPage)
       .sort({ [sortBy]: sortOption === SortOption.ASC ? 1 : -1 }),
-    RestaurantModel.countDocuments()
+    RestaurantModel.find(query).countDocuments()
   ]);
 
   return {

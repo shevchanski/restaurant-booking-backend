@@ -18,6 +18,7 @@ interface PaginationOptions {
   page: number;
   perPage: number;
   sortOption: SortOption;
+  searchTerm: string;
 }
 
 export { ControllerCallbeck, MdlwrCallback, PaginationOptions, TokenPair };

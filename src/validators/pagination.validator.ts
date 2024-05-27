@@ -8,5 +8,6 @@ export const PaginationValidator = Joi.object<PaginationOptions>({
   sortOption: Joi.string()
     .required()
     .valid(...Object.values(SortOption))
-    .default(SortOption.ASC)
+    .default(SortOption.ASC),
+  searchTerm: Joi.string().optional().default('')
 });
