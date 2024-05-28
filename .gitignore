@@ -2,12 +2,17 @@
 node_modules
 package-lock.json
 
-# ignore environments
-.env
-.env.local
+
+
 
 # ignore vercel dir | created if project linked & diployed to vercel
 .vercel
 
 #ignore production directory
 dist
+
+# ignore environments
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
