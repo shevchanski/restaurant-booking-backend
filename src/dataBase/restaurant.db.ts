@@ -36,10 +36,11 @@ export class Address {
         delete ret.updatedAt;
         return ret;
       }
-    },
-    toObject: {
-      flattenObjectIds: true
     }
+    //  README flattenObjectIds ruins _id field if using insertMany() | _id type becomes to ObjectId but string instead
+    //   toObject: {
+    //     flattenObjectIds: true
+    //   }
   }
 })
 export class Restaurant extends TimeStamps {
