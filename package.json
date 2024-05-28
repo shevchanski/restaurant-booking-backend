@@ -13,7 +13,7 @@
     "build": "rimraf dist && npx tsc",
     "start": "node dist/app.js",
     "deploy": "rimraf dist && npx tsc && vercel",
-    "db:seed-rests": "dotenv run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
+    "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
   },
   "repository": {
     "type": "git",

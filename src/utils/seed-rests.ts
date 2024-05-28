@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
 import { faker } from '@faker-js/faker';
 import { readFile } from 'fs/promises';
@@ -25,7 +26,7 @@ function createRestaurantObject(listOfCuisine: string[]) {
   return resObject;
 }
 
-async function seedRestaurants() {
+async function seedRestaurants(numberOfRestaurants: number = 50) {
   const cuisineFile = await readFile(
     path.join('.', 'src', 'constants', 'cuisine-without.json'),
     'utf-8'
@@ -35,20 +36,33 @@ async function seedRestaurants() {
 
   const restsList: Array<object> = [];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < numberOfRestaurants; i++) {
     restsList.push(createRestaurantObject(cuisineArray));
   }
 
   await RestaurantModel.insertMany(restsList);
 }
 
+async function dropAllCollections() {
+  const collections = await mongoose.connection.listCollections();
+
+  for (let i = 0; i < collections.length; i++) {
+    await mongoose.connection.dropCollection(collections[i].name);
+  }
+}
+
 async function main() {
   try {
+    console.log(DatabaseConfig.MONGO_PROD_URI);
+
     await mongoose.connect(DatabaseConfig.MONGO_PROD_URI);
 
-    await seedRestaurants();
+    await seedRestaurants(100);
+
+    //  await dropAllCollections();
 
     await mongoose.disconnect();
+
     console.log('Seeded successfully');
   } catch (error) {
     console.error(
