@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 dotenv.config();
 
 import authRouter from './api/auth/auth.router';
+import favoriteRouter from './api/favorite/favorite.router';
 import resRouter from './api/restaurant/res.router';
 import userRouter from './api/user/user.router';
 import { DatabaseConfig } from './configs/db.config';
@@ -30,6 +31,7 @@ app.use(RouteLogger);
 app.use(GlobalRoutes.USERS, userRouter);
 app.use(GlobalRoutes.AUTH, authRouter);
 app.use(GlobalRoutes.RESTAURANTS, resRouter);
+app.use(GlobalRoutes.FAVORITES, favoriteRouter);
 
 // for routes which is not supposed by our app, we use not-found router to throw an error
 app.use('*', notFoundRouteHandler);

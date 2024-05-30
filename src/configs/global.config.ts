@@ -3,13 +3,18 @@ const TokenConfig = {
   REFRESH_SECRET: process.env.REFRESH_TOKEN_SECRET || 'refreshWord'
 };
 
+// const stores regular expressions
 const PasswordRegex =
   /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,20}$/;
 
+const TokenRegex = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
+
+//   enums with all possible API routes
 enum GlobalRoutes {
   USERS = '/users',
   AUTH = '/auth',
-  RESTAURANTS = '/restaurants'
+  RESTAURANTS = '/restaurants',
+  FAVORITES = '/favorites'
 }
 
 enum UserSubroutes {
@@ -24,8 +29,16 @@ enum AuthSubroutes {
   REFRESH_TOKENS = '/refreshTokens'
 }
 
-const TokenRegex = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
+enum ResSubroutes {
+  ROOT = '/',
+  BY_RES_ID = '/:restaurantId'
+}
 
+enum FavoriteSubroutes {
+  ROOT = '/'
+}
+
+// TYPES of instances or ect.
 enum TokenTypes {
   ACCESS = 'ACCESS',
   REFRESH = 'REFRESH'
@@ -36,11 +49,6 @@ enum UserValidationType {
   UPDATE_USER = 'UPDATE_USER',
   UPDATE_EMAIL = 'UPDATE_EMAIL',
   UPDATE_PASS = 'UPDATE_PASS'
-}
-
-enum ResSubroutes {
-  ROOT = '/',
-  BY_RES_ID = '/:restaurantId'
 }
 
 enum InstanceParam {
@@ -55,6 +63,7 @@ enum SortOption {
 
 export {
   AuthSubroutes,
+  FavoriteSubroutes,
   GlobalRoutes,
   InstanceParam,
   PasswordRegex,
