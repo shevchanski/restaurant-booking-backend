@@ -5,8 +5,13 @@ import {
   UserSubroutes
 } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
-import { addFavorite, returnUserFavorites } from './controllers';
 import {
+  addFavorite,
+  removeUserFavorite,
+  returnUserFavorites
+} from './controllers';
+import {
+  checkIfFavoured,
   checkIfRestaurantExists,
   validateFavoriteObject
 } from './middlewares/';
@@ -18,6 +23,7 @@ router.post(
   FavoriteSubroutes.ROOT,
   validateFavoriteObject,
   checkIfRestaurantExists,
+  checkIfFavoured('toAdd'),
   addFavorite
 );
 
@@ -26,6 +32,14 @@ router.get(
   UserSubroutes.BY_USER_ID,
   validateQueryParam(InstanceParam.USER_ID),
   returnUserFavorites
+);
+
+// DELETE methods
+router.delete(
+  FavoriteSubroutes.ROOT,
+  validateFavoriteObject,
+  checkIfFavoured('toDelete'),
+  removeUserFavorite
 );
 
 export default router;
