@@ -1,4 +1,5 @@
 import {
+  DocumentType,
   Ref,
   ReturnModelType,
   getModelForClass,
@@ -35,36 +36,40 @@ export class Favorite {
 
   public static async getAllFavorites(
     this: ReturnModelType<typeof Favorite>,
-    userId: string
+    userId: string,
+    returnRestaurantsIds: boolean = false
   ) {
     const favoritesArray = await (async () => {
-      const favorites = (await FavoriteModel.find({ _user_id: userId })).map(
-        async (rec) => await rec.populate('restaurant')
-      );
+      const favorites = await FavoriteModel.find({ _user_id: userId });
+
+      if (returnRestaurantsIds) {
+        return favorites.map((rest) => rest._restaurant_id.toString());
+      }
+
       if (!favorites.length) {
         return null;
       }
 
-      const resultArray: Favorite[] = [];
+      const promisesArray = favorites.map(
+        async (rec) => await rec.populate('restaurant')
+      );
 
-      for (const favorite of favorites) {
-        const restaurant = await favorite;
+      const resultArray: DocumentType<Favorite>[] = [];
 
-        resultArray.push(restaurant);
+      for (const promise of promisesArray) {
+        const favoriteWithRestaurant = await promise;
+
+        resultArray.push(favoriteWithRestaurant);
       }
-      return resultArray;
+
+      return resultArray.map((favorite) => favorite.restaurant);
     })();
 
     if (!favoritesArray) {
-      return null;
+      return [];
     }
 
-    const normalizedResponse = {
-      _user_id: favoritesArray[0]._user_id,
-      restaurants: favoritesArray.map((favorite) => favorite.restaurant)
-    };
-
-    return normalizedResponse;
+    return favoritesArray;
   }
 }
 
