@@ -31,7 +31,8 @@ enum AuthSubroutes {
 
 enum ResSubroutes {
   ROOT = '/',
-  BY_RES_ID = '/:restaurantId'
+  BY_RES_ID = '/:restaurantId',
+  PERSONAL = '/personalRecommendations/:userId'
 }
 
 enum FavoriteSubroutes {
@@ -61,11 +62,16 @@ enum SortOption {
   DESC = 'DESC' //descending
 }
 
+const MIN_NUMBER_OF_FAVORITES = 2;
+const DEFAULT_PR_TOP_K = 5; // default number of personal recommendations, which will be given to user
+
 export {
   AuthSubroutes,
+  DEFAULT_PR_TOP_K,
   FavoriteSubroutes,
   GlobalRoutes,
   InstanceParam,
+  MIN_NUMBER_OF_FAVORITES,
   PasswordRegex,
   ResSubroutes,
   SortOption,
