@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs-node';
 
 import { getAllRestaurants } from '../services/getAllRestaurants.service';
 import { getAllUsersIds } from '../services/getAllUsersIds.service';
-import { createUsersProfiles } from './createUsersProfiles';
+import { createUserProfile } from './createUserProfile';
 import getRestFeatureEncoder from './getRestFeaturesEncoder';
 
 interface Map {
@@ -15,7 +15,7 @@ async function getRecommendations(userId: string, topK: number = 5) {
     ...new Set((await getAllUsersIds()).map((user) => user._user_id))
   ];
 
-  if (allUsersIds.includes(userId)) {
+  if (!allUsersIds.includes(userId)) {
     // eslint-disable-next-line no-console
     console.error(
       `[RS-Model] - User with id: ${userId} doesn't have list of favorite restaurants.`
@@ -40,27 +40,24 @@ async function getRecommendations(userId: string, topK: number = 5) {
   //   storing all restaurants ids
   const restaurantsIds = Object.keys(restaurantFeaturesMap);
 
-  //   getting profiles for users. They will be used to train model
-  const { usersProfiles, usersFavorites } = await createUsersProfiles(
-    allUsersIds,
+  const { userProfile, favoritesMap } = await createUserProfile(
+    userId,
     restaurantFeaturesMap
   );
 
+  //   creating array with the same number of dimensions as favoritesMap
   const userProfileArray: number[][] = [];
 
-  //   string all users profiles into 2-dimensions array. It will be used to create tensor
-  const favouredRestaurantsFeatures = Object.keys(usersFavorites).flatMap(
-    (userId) => {
-      return usersFavorites[userId].map((restId) => {
-        userProfileArray.push(usersProfiles[userId]);
-        return restaurantFeaturesMap[restId];
-      });
-    }
-  );
+  favoritesMap.map(() => {
+    userProfileArray.push(userProfile as number[]);
+  });
+
+  //   shuffling favoritesMap array between training
+  tf.util.shuffle(favoritesMap);
 
   //   creating tensors with users profiles and favoured restaurants
-  const userTensor = tf.tensor2d(Object.values(userProfileArray));
-  const favouredTensor = tf.tensor2d(favouredRestaurantsFeatures);
+  const userTensor = tf.tensor2d(userProfileArray);
+  const favouredTensor = tf.tensor2d(favoritesMap);
 
   //   creating model which will be used to create recommendations
   const model = tf.sequential();
@@ -86,6 +83,7 @@ async function getRecommendations(userId: string, topK: number = 5) {
   //   training model with existed data
   await model.fit(userTensor, favouredTensor, {
     epochs: 200,
+    verbose: 0,
     validationSplit: 0.2
     //  callbacks: {
     //    onEpochEnd(epoch, logs) {
@@ -94,8 +92,8 @@ async function getRecommendations(userId: string, topK: number = 5) {
     //  }
   });
 
-  //   creating tensor with profile for user by id
-  const oneUserTensor = tf.tensor2d([usersProfiles[userId]]);
+  //   creating tensor with user profile by user id
+  const oneUserTensor = tf.tensor2d([userProfile]);
 
   //  getting similar restaurants based on user profile
   const predict = model.predict(
@@ -111,6 +109,7 @@ async function getRecommendations(userId: string, topK: number = 5) {
     similarity: predictions[index]
   }));
 
+  //   sorting recommendations by number of similarity
   similarities.sort((a, b) => b.similarity - a.similarity);
 
   //   await model.save('file://./model');
