@@ -53,8 +53,14 @@ enum SortOption {
   DESC = 'DESC' //descending
 }
 
+enum EntityType {
+  GENERAL = 'general',
+  RESTAURANTS = 'restaurants'
+}
+
 export {
   AuthSubroutes,
+  EntityType,
   GlobalRoutes,
   InstanceParam,
   PasswordRegex,
