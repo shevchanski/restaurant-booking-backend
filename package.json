@@ -54,6 +54,8 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^0.44.0",
+    "@tensorflow/tfjs": "^4.19.0",
+    "@tensorflow/tfjs-node": "^4.19.0",
     "@typegoose/typegoose": "^12.2.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",

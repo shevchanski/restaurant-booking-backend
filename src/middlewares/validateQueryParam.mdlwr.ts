@@ -1,5 +1,4 @@
 import { NextFunction, Response } from 'express';
-import mongoose from 'mongoose';
 
 import { InstanceParam } from '../configs/global.config';
 import { responseStatus } from '../configs/resStatus.config';
@@ -11,7 +10,9 @@ export const validateQueryParam = (instanceParam: InstanceParam) =>
   errorWrapper((req: IRequest, res: Response, next: NextFunction) => {
     const param = req.params[instanceParam];
 
-    if (!param || !mongoose.isValidObjectId(param)) {
+    // README  temporary disable validation param on ObjectId type. It is caused because i temporary use Clerk
+    //  if (!param || !mongoose.isValidObjectId(param)) {
+    if (!param) {
       throw new APIError(
         `Param '${instanceParam}' is not valid`,
         responseStatus.BAD_REQUEST

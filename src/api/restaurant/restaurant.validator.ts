@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+import { DEFAULT_PR_TOP_K } from '../../configs/global.config';
 import RestaurantModel, {
   Address,
   Restaurant
@@ -33,4 +34,13 @@ const ResPaginationValidator =
       .default('createdAt')
   });
 
-export { ResPaginationValidator, RestObjectValidator };
+const PRQueryLimitValidator = Joi.object({
+  limit: Joi.number()
+    .integer()
+    .optional()
+    .positive()
+    .min(1)
+    .default(DEFAULT_PR_TOP_K)
+});
+
+export { PRQueryLimitValidator, ResPaginationValidator, RestObjectValidator };
