@@ -7,7 +7,9 @@ import {
 
 import { Restaurant } from './restaurant.db';
 
-@modelOptions({ schemaOptions: { timestamps: true } })
+@modelOptions({
+  schemaOptions: { collection: 'restaurant-photos', timestamps: true }
+})
 export class RestaurantPhoto {
   @prop({ ref: () => Restaurant, required: true })
   public _restaurant_id!: Ref<Restaurant>;
