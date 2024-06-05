@@ -1,3 +1,5 @@
+import { BYTE_SIZE } from './global.config';
+
 const S3BucketConfig = {
   ACCESS_KEY: process.env.S3_BUCKET_ACCESS_KEY,
   SECRET_KEY: process.env.S3_BUCKET_SECRET_ACCESS_KEY,
@@ -6,8 +8,7 @@ const S3BucketConfig = {
 };
 
 const FileUploadConfig = {
-  //   MIN_FILE_SIZE: 5 * 1024 * 1024 // 5 MB
-  MAX_FILE_SIZE: 5 * 1024 * 1024, // 15 MB
+  MAX_FILE_SIZE: 15 * BYTE_SIZE * BYTE_SIZE, // 15 MB
   FILE_TYPES: [
     'image/jpeg', // .jpg, .jpeg, .jfif, .pjpeg, .pjp
     'image/png' // .png
