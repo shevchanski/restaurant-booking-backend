@@ -4,7 +4,9 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 
+import fileUpload from 'express-fileupload';
 import authRouter from './api/auth/auth.router';
+import fileRouter from './api/file/file.router';
 import resRouter from './api/restaurant/res.router';
 import userRouter from './api/user/user.router';
 import { DatabaseConfig } from './configs/db.config';
@@ -24,12 +26,14 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(express.json()); // returns mdlwr to handle request with json data
+app.use(fileUpload());
 
 app.use(RouteLogger);
 
 app.use(GlobalRoutes.USERS, userRouter);
 app.use(GlobalRoutes.AUTH, authRouter);
 app.use(GlobalRoutes.RESTAURANTS, resRouter);
+app.use(GlobalRoutes.FILES, fileRouter);
 
 // for routes which is not supposed by our app, we use not-found router to throw an error
 app.use('*', notFoundRouteHandler);

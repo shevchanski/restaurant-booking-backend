@@ -9,7 +9,8 @@ const PasswordRegex =
 enum GlobalRoutes {
   USERS = '/users',
   AUTH = '/auth',
-  RESTAURANTS = '/restaurants'
+  RESTAURANTS = '/restaurants',
+  FILES = '/files'
 }
 
 enum UserSubroutes {
@@ -22,6 +23,14 @@ enum UserSubroutes {
 enum AuthSubroutes {
   ROOT = '/',
   REFRESH_TOKENS = '/refreshTokens'
+}
+enum ResSubroutes {
+  ROOT = '/',
+  BY_RES_ID = '/:restaurantId'
+}
+
+enum FileSubroutes {
+  REST_PHOTO = `/restaurants${ResSubroutes.BY_RES_ID}`
 }
 
 const TokenRegex = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
@@ -36,11 +45,6 @@ enum UserValidationType {
   UPDATE_USER = 'UPDATE_USER',
   UPDATE_EMAIL = 'UPDATE_EMAIL',
   UPDATE_PASS = 'UPDATE_PASS'
-}
-
-enum ResSubroutes {
-  ROOT = '/',
-  BY_RES_ID = '/:restaurantId'
 }
 
 enum InstanceParam {
@@ -58,9 +62,13 @@ enum EntityType {
   RESTAURANTS = 'restaurants'
 }
 
+const BYTE_SIZE = 1024;
+
 export {
   AuthSubroutes,
+  BYTE_SIZE,
   EntityType,
+  FileSubroutes,
   GlobalRoutes,
   InstanceParam,
   PasswordRegex,
