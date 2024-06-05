@@ -23,7 +23,8 @@
     "strict": true /* Enable all strict type-checking options. */,
     "noImplicitAny": false /* Allows to declare and use variable in global scope. */,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true // enabled this option, because during compilation lib tensor-flow causes problems
   },
   "include": ["./src/**/*"]
 }
