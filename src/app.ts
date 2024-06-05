@@ -6,6 +6,7 @@ dotenv.config();
 
 import fileUpload from 'express-fileupload';
 import authRouter from './api/auth/auth.router';
+import favoriteRouter from './api/favorite/favorite.router';
 import fileRouter from './api/file/file.router';
 import resRouter from './api/restaurant/res.router';
 import userRouter from './api/user/user.router';
@@ -34,6 +35,7 @@ app.use(GlobalRoutes.USERS, userRouter);
 app.use(GlobalRoutes.AUTH, authRouter);
 app.use(GlobalRoutes.RESTAURANTS, resRouter);
 app.use(GlobalRoutes.FILES, fileRouter);
+app.use(GlobalRoutes.FAVORITES, favoriteRouter);
 
 // for routes which is not supposed by our app, we use not-found router to throw an error
 app.use('*', notFoundRouteHandler);
