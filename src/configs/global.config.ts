@@ -14,6 +14,7 @@ enum GlobalRoutes {
   USERS = '/users',
   AUTH = '/auth',
   RESTAURANTS = '/restaurants',
+  FILES = '/files',
   FAVORITES = '/favorites'
 }
 
@@ -33,6 +34,10 @@ enum ResSubroutes {
   ROOT = '/',
   BY_RES_ID = '/:restaurantId',
   PERSONAL = '/personalRecommendations/:userId'
+}
+
+enum FileSubroutes {
+  REST_PHOTO = `/restaurants${ResSubroutes.BY_RES_ID}`
 }
 
 enum FavoriteSubroutes {
@@ -65,10 +70,20 @@ enum SortOption {
 const MIN_NUMBER_OF_FAVORITES = 2;
 const DEFAULT_PR_TOP_K = 5; // default number of personal recommendations, which will be given to user
 
+enum EntityType {
+  GENERAL = 'general',
+  RESTAURANTS = 'restaurants'
+}
+
+const BYTE_SIZE = 1024;
+
 export {
   AuthSubroutes,
+  BYTE_SIZE,
   DEFAULT_PR_TOP_K,
+  EntityType,
   FavoriteSubroutes,
+  FileSubroutes,
   GlobalRoutes,
   InstanceParam,
   MIN_NUMBER_OF_FAVORITES,
