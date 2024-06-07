@@ -33,7 +33,7 @@ enum AuthSubroutes {
 enum ResSubroutes {
   ROOT = '/',
   BY_RES_ID = '/:restaurantId',
-  PERSONAL = '/personalRecommendations/:userId',
+  PERSONAL = '/recommendations/:userId',
   TOP_RATED = '/top_rated'
 }
 
