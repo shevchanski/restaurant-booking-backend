@@ -9,8 +9,9 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "destination": "dist/app.js"
     }
-  ]
+  ],
+  "installCommand": "npm install --omit=dev"
 }
