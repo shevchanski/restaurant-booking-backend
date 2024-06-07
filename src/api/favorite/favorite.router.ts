@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import {
   FavoriteSubroutes,
   InstanceParam,
@@ -13,7 +14,8 @@ import {
 import {
   checkIfFavoured,
   checkIfRestaurantExists,
-  validateFavoriteObject
+  validateFavoriteObject,
+  validateGetFavoritesParam
 } from './middlewares/';
 
 const router = Router();
@@ -30,6 +32,7 @@ router.post(
 // GET methods
 router.get(
   UserSubroutes.BY_USER_ID,
+  validateGetFavoritesParam,
   validateQueryParam(InstanceParam.USER_ID),
   returnUserFavorites
 );

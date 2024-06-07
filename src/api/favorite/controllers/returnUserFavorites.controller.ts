@@ -9,6 +9,7 @@ import favoriteService from '../services';
 export const returnUserFavorites = errorWrapper(
   async (req: IRequest, res: Response) => {
     const userId = req.params[InstanceParam.USER_ID];
+    const { onlyIds } = req.locals;
 
     if (!userId || typeof userId !== 'string') {
       throw new APIError('No userId', responseStatus.BAD_REQUEST);
@@ -16,7 +17,7 @@ export const returnUserFavorites = errorWrapper(
 
     const favorites = await favoriteService.getAllFavoritesByUserId(
       userId,
-      true
+      onlyIds
     );
 
     res.status(responseStatus.OK).json({ favorites });
