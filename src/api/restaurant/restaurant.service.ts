@@ -55,9 +55,14 @@ async function findAllRestaurants(
   };
 }
 
+function returnTopRated(limit: number = 5) {
+  return RestaurantModel.find().sort({ rating: -1 }).limit(limit);
+}
+
 export default {
   insertRestaurant,
   updateResWithObject,
   findRestaurant,
-  findAllRestaurants
+  findAllRestaurants,
+  returnTopRated
 };

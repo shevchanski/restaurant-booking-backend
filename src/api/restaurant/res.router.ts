@@ -5,6 +5,7 @@ import { validateQueryParam } from '../../middlewares';
 import {
   createRes,
   returnAllRests,
+  returnTopRatedRests,
   returnUserRecommendations,
   updateRes
 } from './controllers';
@@ -19,9 +20,10 @@ import {
 const router = express.Router();
 
 // [THOUGHTS] think about checking duplicate with geo-location
-// GET methods
+// POST methods
 router.post(ResSubroutes.ROOT, validatedResObject, createRes);
 
+// GET methods
 router.get(ResSubroutes.ROOT, validateResPagination, returnAllRests);
 
 router.get(
@@ -31,6 +33,8 @@ router.get(
   validatePRLimit,
   returnUserRecommendations
 );
+
+router.get(ResSubroutes.TOP_RATED, validatePRLimit, returnTopRatedRests);
 
 // PUT methods
 router.put(

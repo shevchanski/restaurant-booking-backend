@@ -40,6 +40,7 @@ const PRQueryLimitValidator = Joi.object({
     .optional()
     .positive()
     .min(1)
+    .max(20)
     .default(DEFAULT_PR_TOP_K)
 });
 
