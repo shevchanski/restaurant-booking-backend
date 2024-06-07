@@ -5,6 +5,7 @@ import { validateQueryParam } from '../../middlewares';
 import {
   createRes,
   returnAllRests,
+  returnRes,
   returnTopRatedRests,
   returnUserRecommendations,
   updateRes
@@ -35,6 +36,13 @@ router.get(
 );
 
 router.get(ResSubroutes.TOP_RATED, validatePRLimit, returnTopRatedRests);
+
+router.get(
+  ResSubroutes.BY_RES_ID,
+  validateQueryParam(InstanceParam.RES_ID),
+  getResById,
+  returnRes
+);
 
 // PUT methods
 router.put(
