@@ -14,8 +14,11 @@ export const returnUserFavorites = errorWrapper(
       throw new APIError('No userId', responseStatus.BAD_REQUEST);
     }
 
-    const response = await favoriteService.getAllFavoritesByUserId(userId);
+    const favorites = await favoriteService.getAllFavoritesByUserId(
+      userId,
+      true
+    );
 
-    res.status(responseStatus.OK).json({ ...response });
+    res.status(responseStatus.OK).json({ favorites });
   }
 );
