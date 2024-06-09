@@ -27,6 +27,8 @@ router.post(ResSubroutes.ROOT, validatedResObject, createRes);
 // GET methods
 router.get(ResSubroutes.ROOT, validateResPagination, returnAllRests);
 
+router.get(ResSubroutes.TOP_RATED, validatePRLimit, returnTopRatedRests);
+
 router.get(
   ResSubroutes.PERSONAL,
   validateQueryParam(InstanceParam.USER_ID),
@@ -34,8 +36,6 @@ router.get(
   validatePRLimit,
   returnUserRecommendations
 );
-
-router.get(ResSubroutes.TOP_RATED, validatePRLimit, returnTopRatedRests);
 
 router.get(
   ResSubroutes.BY_RES_ID,
