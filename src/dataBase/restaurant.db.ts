@@ -59,7 +59,7 @@ export class Restaurant extends TimeStamps {
   @prop({ type: () => [String], required: true, default: [] })
   public cuisine!: mongoose.Types.Array<string>;
 
-  @prop({ type: () => Number, required: true, min: 0, max: 5 })
+  @prop({ type: () => Number, min: 0, max: 5, default: 0 })
   public rating!: number;
 
   @prop({ type: () => String })
