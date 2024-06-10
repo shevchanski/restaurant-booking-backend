@@ -13,17 +13,17 @@ const AddressValidator = Joi.object<Address>({
   country: Joi.string().required().trim(),
   post_code: Joi.string().required().trim(),
   street_address: Joi.string().required().trim(),
-  region: Joi.string().trim()
+  region: Joi.string().trim().optional().allow('')
 });
 
 const RestObjectValidator = Joi.object<Restaurant>({
   title: Joi.string().required().trim(),
-  description: Joi.string().optional().trim(),
-  website: Joi.string().uri().optional().trim(),
+  description: Joi.string().optional().trim().allow(''),
+  website: Joi.string().uri().optional().trim().allow(''),
   address: AddressValidator,
   cuisine: Joi.array().items(Joi.string().required().trim()).required(),
   rating: Joi.number().required().min(0).max(5).precision(1),
-  phoneNumber: Joi.string().optional().trim()
+  phoneNumber: Joi.string().required().trim()
 }).required();
 
 const ResPaginationValidator =
