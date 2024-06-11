@@ -9,6 +9,12 @@ const PasswordRegex =
 
 const TokenRegex = /^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
 
+// enum with query params
+enum InstanceParam {
+  USER_ID = 'userId',
+  RES_ID = 'restaurantId'
+}
+
 //   enums with all possible API routes
 enum GlobalRoutes {
   USERS = '/users',
@@ -20,7 +26,7 @@ enum GlobalRoutes {
 
 enum UserSubroutes {
   ROOT = '/',
-  BY_USER_ID = '/:userId',
+  BY_USER_ID = `/:${InstanceParam.USER_ID}`,
   UPDATE_EMAIL = '/updateEmail',
   UPDATE_PASS = '/updatePassword'
 }
@@ -32,13 +38,13 @@ enum AuthSubroutes {
 
 enum ResSubroutes {
   ROOT = '/',
-  BY_RES_ID = '/:restaurantId',
-  PERSONAL = '/recommendations/:userId',
+  BY_RES_ID = `/:${InstanceParam.RES_ID}`,
+  PERSONAL = `/recommendations/:${InstanceParam.USER_ID}`,
   TOP_RATED = '/top_rated'
 }
 
 enum FileSubroutes {
-  REST_PHOTO = `/restaurants${ResSubroutes.BY_RES_ID}`
+  REST_PHOTO = `/restaurants/:${InstanceParam.RES_ID}`
 }
 
 enum FavoriteSubroutes {
@@ -56,11 +62,6 @@ enum UserValidationType {
   UPDATE_USER = 'UPDATE_USER',
   UPDATE_EMAIL = 'UPDATE_EMAIL',
   UPDATE_PASS = 'UPDATE_PASS'
-}
-
-enum InstanceParam {
-  USER_ID = 'userId',
-  RES_ID = 'restaurantId'
 }
 
 enum SortOption {
