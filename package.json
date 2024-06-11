@@ -12,6 +12,7 @@
     "cm": "cz",
     "build": "rimraf dist && npx tsc",
     "start": "node dist/app.js",
+    "start:local": "dotenvx run -f .env.local -- node dist/app.js",
     "deploy": "rimraf dist && npx tsc && vercel",
     "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
   },
