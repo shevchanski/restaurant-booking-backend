@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import fileUpload from 'express-fileupload';
 import mongoose from 'mongoose';
 
 dotenv.config();
 
-import fileUpload from 'express-fileupload';
 import authRouter from './api/auth/auth.router';
 import favoriteRouter from './api/favorite/favorite.router';
 import fileRouter from './api/file/file.router';
