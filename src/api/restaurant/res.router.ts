@@ -6,6 +6,7 @@ import {
   createRes,
   returnAllRests,
   returnRes,
+  returnRestPhotos,
   returnTopRatedRests,
   returnUserRecommendations,
   updateRes
@@ -35,6 +36,13 @@ router.get(
   checkIfUserHasFavorites,
   validatePRLimit,
   returnUserRecommendations
+);
+
+router.get(
+  ResSubroutes.REST_PHOTOS_BY_ID,
+  validateQueryParam(InstanceParam.RES_ID),
+  getResById,
+  returnRestPhotos
 );
 
 router.get(

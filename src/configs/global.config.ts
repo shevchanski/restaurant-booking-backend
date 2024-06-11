@@ -40,7 +40,8 @@ enum ResSubroutes {
   ROOT = '/',
   BY_RES_ID = `/:${InstanceParam.RES_ID}`,
   PERSONAL = `/recommendations/:${InstanceParam.USER_ID}`,
-  TOP_RATED = '/top_rated'
+  TOP_RATED = '/top_rated',
+  REST_PHOTOS_BY_ID = `/:${InstanceParam.RES_ID}/photos`
 }
 
 enum FileSubroutes {
