@@ -10,6 +10,7 @@ import { Restaurant } from './restaurant.db';
 
 @modelOptions({
   schemaOptions: {
+    versionKey: false,
     toJSON: {
       virtuals: true
     },

@@ -8,7 +8,11 @@ import {
 import { Restaurant } from './restaurant.db';
 
 @modelOptions({
-  schemaOptions: { collection: 'restaurant-photos', timestamps: true }
+  schemaOptions: {
+    collection: 'restaurant-photos',
+    timestamps: true,
+    versionKey: false
+  }
 })
 export class RestaurantPhoto {
   @prop({ ref: () => Restaurant, required: true })
