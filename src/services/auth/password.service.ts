@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import APIError from '../errors/APIError';
-import { responseStatus } from '../configs/resStatus.config';
+import { responseStatus } from '../../configs/resStatus.config';
+import APIError from '../../errors/APIError';
 
 async function hashPassword(plainPassword: string): Promise<string> {
   const hashedPassword = await bcrypt.hash(plainPassword, 5);

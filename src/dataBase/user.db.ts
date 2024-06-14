@@ -7,7 +7,7 @@ import {
 } from '@typegoose/typegoose';
 
 import { UserSecureFields } from '../configs/db.config';
-import passwordService from '../services/password.service';
+import passwordService from '../services/auth/password.service';
 import { IUser } from '../types/user.types';
 
 @modelOptions({

@@ -1,8 +1,8 @@
 import S3 from 'aws-sdk/clients/s3';
 import { UploadedFile } from 'express-fileupload';
-import { EntityType } from '../configs/global.config';
-import { S3BucketConfig } from '../configs/s3.config';
-import { generateBucketKey } from '../utils/generateBucketKey';
+import { EntityType } from '../../configs/global.config';
+import { S3BucketConfig } from '../../configs/s3.config';
+import { generateBucketKey } from '../../utils/generateBucketKey';
 
 const s3 = new S3({
   region: S3BucketConfig.REGION,

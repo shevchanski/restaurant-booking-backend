@@ -2,6 +2,7 @@ import express from 'express';
 
 import { InstanceParam, ResSubroutes } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
+import apiCache from '../../services/cache';
 import {
   createRes,
   returnAllRests,
@@ -41,6 +42,7 @@ router.get(
 router.get(
   ResSubroutes.REST_PHOTOS_BY_ID,
   validateQueryParam(InstanceParam.RES_ID),
+  apiCache.addToCache(),
   getResById,
   returnRestPhotos
 );

@@ -1,10 +1,10 @@
 import { NextFunction, Response } from 'express';
 
-import errorWrapper from '../../../errors/errorWrapper';
-import { IRequest } from '../../../types/query.types';
-import APIError from '../../../errors/APIError';
 import { responseStatus } from '../../../configs/resStatus.config';
-import passwordService from '../../../services/password.service';
+import APIError from '../../../errors/APIError';
+import errorWrapper from '../../../errors/errorWrapper';
+import passwordService from '../../../services/auth/password.service';
+import { IRequest } from '../../../types/query.types';
 
 const loginUserWithEmail = errorWrapper(
   async (req: IRequest, res: Response, next: NextFunction) => {

@@ -1,4 +1,4 @@
-import RestaurantPhotoModel from '../dataBase/restaurant-photo.db';
+import RestaurantPhotoModel from '../../dataBase/restaurant-photo.db';
 
 export default async function getRestPhotosById(restId: string) {
   const res = await RestaurantPhotoModel.find({

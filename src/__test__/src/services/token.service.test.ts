@@ -1,4 +1,4 @@
-import tokenService from '../../../services/token.service';
+import tokenService from '../../../services/auth/token.service';
 import createFakeUser from '../../helpers/createFakeUser';
 import { ExpectCallbackTest, TestObjectData } from '../../types/global.types';
 

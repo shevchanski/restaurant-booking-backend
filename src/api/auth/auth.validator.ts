@@ -5,9 +5,9 @@ import {
   TokenRegex,
   TokenTypes
 } from '../../configs/global.config';
-import APIError from '../../errors/APIError';
 import { responseStatus } from '../../configs/resStatus.config';
-import tokenService from '../../services/token.service';
+import APIError from '../../errors/APIError';
+import tokenService from '../../services/auth/token.service';
 
 const loginDataValidator = Joi.object({
   email: Joi.string().email().required(),
@@ -38,4 +38,4 @@ function validateTokenDynamically(
   return validatedToken;
 }
 
-export { loginDataValidator, TokenValidator, validateTokenDynamically };
+export { TokenValidator, loginDataValidator, validateTokenDynamically };
