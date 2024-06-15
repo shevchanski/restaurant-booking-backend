@@ -13,4 +13,8 @@ const addToCache = (duration?: string) => {
   return apicache.options(apiCacheOptions).middleware(duration);
 };
 
-export default { addToCache };
+const deleteCache = (keyToDel: string) => {
+  return apicache.clear(keyToDel);
+};
+
+export default { addToCache, deleteCache };
