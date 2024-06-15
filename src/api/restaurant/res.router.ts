@@ -27,9 +27,19 @@ const router = express.Router();
 router.post(ResSubroutes.ROOT, validatedResObject, createRes);
 
 // GET methods
-router.get(ResSubroutes.ROOT, validateResPagination, returnAllRests);
+router.get(
+  ResSubroutes.ROOT,
+  validateResPagination,
+  apiCache.addToCache('10 minutes'),
+  returnAllRests
+);
 
-router.get(ResSubroutes.TOP_RATED, validatePRLimit, returnTopRatedRests);
+router.get(
+  ResSubroutes.TOP_RATED,
+  validatePRLimit,
+  apiCache.addToCache(),
+  returnTopRatedRests
+);
 
 router.get(
   ResSubroutes.PERSONAL,
@@ -50,6 +60,7 @@ router.get(
 router.get(
   ResSubroutes.BY_RES_ID,
   validateQueryParam(InstanceParam.RES_ID),
+  apiCache.addToCache(),
   getResById,
   returnRes
 );
