@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { responseStatus } from '../../../configs/resStatus.config';
 import APIError from '../../../errors/APIError';
 import errorWrapper from '../../../errors/errorWrapper';
+import ApiService from '../../../services/cache';
 import { IRequest } from '../../../types/query.types';
 import restaurantService from '../restaurant.service';
 
@@ -18,6 +19,8 @@ export const createRes = errorWrapper(async (req: IRequest, res: Response) => {
   const restaurant = await restaurantService.insertRestaurant(
     validatedResObject
   );
+
+  ApiService.deleteCache('/search');
 
   res.status(responseStatus.CREATED).json({ restaurant });
 });
