@@ -1,11 +1,11 @@
 import { Response } from 'express';
 
-import authService from '../auth.service';
 import { responseStatus } from '../../../configs/resStatus.config';
 import APIError from '../../../errors/APIError';
 import errorWrapper from '../../../errors/errorWrapper';
+import tokenService from '../../../services/auth/token.service';
 import { IRequest } from '../../../types/query.types';
-import tokenService from '../../../services/token.service';
+import authService from '../auth.service';
 
 const assignTokensToUser = errorWrapper(
   async (req: IRequest, res: Response) => {

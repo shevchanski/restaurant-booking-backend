@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs-node';
 
-import { getAllRestaurants } from '../services/getAllRestaurants.service';
-import { getAllUsersIds } from '../services/getAllUsersIds.service';
+import { getAllRestaurants } from '../services/db/getAllRestaurants.service';
+import { getAllUsersIds } from '../services/db/getAllUsersIds.service';
 import { createUserProfile } from './createUserProfile';
 import getRestFeatureEncoder from './getRestFeaturesEncoder';
 

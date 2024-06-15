@@ -2,8 +2,8 @@ import { Response } from 'express';
 import { EntityType, InstanceParam } from '../../../configs/global.config';
 import { responseStatus } from '../../../configs/resStatus.config';
 import errorWrapper from '../../../errors/errorWrapper';
-import { addRestPhoto } from '../../../services/rest_photo_db.service';
-import uploadFileToS3Bucket from '../../../services/s3.service';
+import uploadFileToS3Bucket from '../../../services/aws/s3.service';
+import { addRestPhoto } from '../../../services/db/rest_photo_db.service';
 import { IRequest } from '../../../types/query.types';
 
 export const uploadRestPhoto = errorWrapper(

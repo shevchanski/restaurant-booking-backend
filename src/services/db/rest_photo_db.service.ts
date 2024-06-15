@@ -1,4 +1,4 @@
-import RestaurantPhotoModel from '../dataBase/restaurant-photo.db';
+import RestaurantPhotoModel from '../../dataBase/restaurant-photo.db';
 
 function addRestPhoto(
   restaurantId: string,

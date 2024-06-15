@@ -6,6 +6,8 @@ import restaurantService from '../restaurant.service';
 
 export const returnAllRests = errorWrapper(
   async (req: IRequest, res: Response) => {
+    req.apicacheGroup = '/search'; // adding to cache group '/search'
+
     const paginationOptions = req.locals?.validatedPagination;
 
     const response = await restaurantService.findAllRestaurants(

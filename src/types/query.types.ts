@@ -10,6 +10,7 @@ interface IRequest extends Request {
   locals?: any;
   user?: DocumentType<User>;
   restaurant?: DocumentType<Restaurant>;
+  apicacheGroup?: string;
 }
 
 export { IRequest };

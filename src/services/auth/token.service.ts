@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-import { IUser } from '../types/user.types';
-import { TokenConfig, TokenTypes } from '../configs/global.config';
-import { TokenPair } from '../types/global.types';
-import APIError from '../errors/APIError';
-import { responseStatus } from '../configs/resStatus.config';
+import { TokenConfig, TokenTypes } from '../../configs/global.config';
+import { responseStatus } from '../../configs/resStatus.config';
+import APIError from '../../errors/APIError';
+import { TokenPair } from '../../types/global.types';
+import { IUser } from '../../types/user.types';
 
 function createTokenPair(tokenPayload: IUser): TokenPair {
   if (typeof tokenPayload !== 'object' || tokenPayload === null) {

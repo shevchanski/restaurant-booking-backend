@@ -2,6 +2,7 @@ import express from 'express';
 
 import { InstanceParam, ResSubroutes } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
+import { cacheService } from '../../services/cache';
 import {
   createRes,
   returnAllRests,
@@ -26,9 +27,19 @@ const router = express.Router();
 router.post(ResSubroutes.ROOT, validatedResObject, createRes);
 
 // GET methods
-router.get(ResSubroutes.ROOT, validateResPagination, returnAllRests);
+router.get(
+  ResSubroutes.ROOT,
+  validateResPagination,
+  cacheService.addToCache('10 minutes'),
+  returnAllRests
+);
 
-router.get(ResSubroutes.TOP_RATED, validatePRLimit, returnTopRatedRests);
+router.get(
+  ResSubroutes.TOP_RATED,
+  validatePRLimit,
+  cacheService.addToCache(),
+  returnTopRatedRests
+);
 
 router.get(
   ResSubroutes.PERSONAL,
@@ -41,6 +52,7 @@ router.get(
 router.get(
   ResSubroutes.REST_PHOTOS_BY_ID,
   validateQueryParam(InstanceParam.RES_ID),
+  cacheService.addToCache(),
   getResById,
   returnRestPhotos
 );
@@ -48,6 +60,7 @@ router.get(
 router.get(
   ResSubroutes.BY_RES_ID,
   validateQueryParam(InstanceParam.RES_ID),
+  cacheService.addToCache(),
   getResById,
   returnRes
 );

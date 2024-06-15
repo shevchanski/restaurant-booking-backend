@@ -49,7 +49,8 @@ enum FileSubroutes {
 }
 
 enum FavoriteSubroutes {
-  ROOT = '/'
+  ROOT = '/',
+  BY_USER_ID = `/:${InstanceParam.USER_ID}`
 }
 
 // TYPES of instances or ect.
