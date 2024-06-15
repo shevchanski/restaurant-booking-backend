@@ -2,7 +2,7 @@ import express from 'express';
 
 import { InstanceParam, ResSubroutes } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
-import apiCache from '../../services/cache';
+import { cacheService } from '../../services/cache';
 import {
   createRes,
   returnAllRests,
@@ -30,14 +30,14 @@ router.post(ResSubroutes.ROOT, validatedResObject, createRes);
 router.get(
   ResSubroutes.ROOT,
   validateResPagination,
-  apiCache.addToCache('10 minutes'),
+  cacheService.addToCache('10 minutes'),
   returnAllRests
 );
 
 router.get(
   ResSubroutes.TOP_RATED,
   validatePRLimit,
-  apiCache.addToCache(),
+  cacheService.addToCache(),
   returnTopRatedRests
 );
 
@@ -52,7 +52,7 @@ router.get(
 router.get(
   ResSubroutes.REST_PHOTOS_BY_ID,
   validateQueryParam(InstanceParam.RES_ID),
-  apiCache.addToCache(),
+  cacheService.addToCache(),
   getResById,
   returnRestPhotos
 );
@@ -60,7 +60,7 @@ router.get(
 router.get(
   ResSubroutes.BY_RES_ID,
   validateQueryParam(InstanceParam.RES_ID),
-  apiCache.addToCache(),
+  cacheService.addToCache(),
   getResById,
   returnRes
 );

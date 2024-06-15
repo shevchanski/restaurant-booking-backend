@@ -17,4 +17,4 @@ const deleteCache = (keyToDel: string) => {
   return apicache.clear(keyToDel);
 };
 
-export default { addToCache, deleteCache };
+export const cacheService = { addToCache, deleteCache };
