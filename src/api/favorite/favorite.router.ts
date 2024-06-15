@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { FavoriteSubroutes, InstanceParam } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
+import { cacheService } from '../../services/cache';
 import {
   addFavorite,
   removeUserFavorite,
@@ -31,6 +32,7 @@ router.get(
   FavoriteSubroutes.BY_USER_ID,
   validateQueryParam(InstanceParam.USER_ID),
   validateGetFavoritesParam,
+  cacheService.addToCache(),
   returnUserFavorites
 );
 
