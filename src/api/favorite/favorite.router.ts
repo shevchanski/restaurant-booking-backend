@@ -1,10 +1,6 @@
 import { Router } from 'express';
 
-import {
-  FavoriteSubroutes,
-  InstanceParam,
-  UserSubroutes
-} from '../../configs/global.config';
+import { FavoriteSubroutes, InstanceParam } from '../../configs/global.config';
 import { validateQueryParam } from '../../middlewares';
 import {
   addFavorite,
@@ -22,7 +18,8 @@ const router = Router();
 
 // POST methods
 router.post(
-  FavoriteSubroutes.ROOT,
+  FavoriteSubroutes.BY_USER_ID,
+  validateQueryParam(InstanceParam.USER_ID),
   validateFavoriteObject,
   checkIfRestaurantExists,
   checkIfFavoured('toAdd'),
@@ -31,15 +28,16 @@ router.post(
 
 // GET methods
 router.get(
-  UserSubroutes.BY_USER_ID,
-  validateGetFavoritesParam,
+  FavoriteSubroutes.BY_USER_ID,
   validateQueryParam(InstanceParam.USER_ID),
+  validateGetFavoritesParam,
   returnUserFavorites
 );
 
 // DELETE methods
 router.delete(
-  FavoriteSubroutes.ROOT,
+  FavoriteSubroutes.BY_USER_ID,
+  validateQueryParam(InstanceParam.USER_ID),
   validateFavoriteObject,
   checkIfFavoured('toDelete'),
   removeUserFavorite
