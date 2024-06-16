@@ -30,7 +30,7 @@ router.post(ResSubroutes.ROOT, validatedResObject, createRes);
 router.get(
   ResSubroutes.ROOT,
   validateResPagination,
-  cacheService.addToCache('10 minutes'),
+  cacheService.addToCache('30 minutes'),
   returnAllRests
 );
 
