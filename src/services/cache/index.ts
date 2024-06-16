@@ -1,7 +1,7 @@
 import apicache from 'apicache';
 
 const apiCacheOptions: apicache.Options = {
-  defaultDuration: '5 minutes'
+  defaultDuration: '1 hour'
 };
 
 if (process.env.NODE_ENV === 'dev') {
