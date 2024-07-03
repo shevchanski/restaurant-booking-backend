@@ -1,10 +1,9 @@
-# Restaurant Booking Backend
+# Restaurant Booking API
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-This repository contains the backend code for a restaurant booking platform.
-The platform allows users to search for restaurants, make reservations, and receive personalized recommendations based on their preferences.  
-Back end part of the service implements a REST_API for handling client-part's request.
+This repository contains the backend code which implements RESTful API for a restaurant booking platform.
+The API handles searching requests, users registrations and authentications, and receive personalized recommendations based on their preferences.
 
 ## Features
 
@@ -20,8 +19,11 @@ Back end part of the service implements a REST_API for handling client-part's re
 - **Express.js**: Web application framework for Node.js.
 - **MongoDB**: NoSQL database for storing restaurant and user data.
 - **JWT**: JSON Web Tokens for authentication and authorization user on the platform.
-
-## Technologies is going to be used
-
 - **AWS Services**: Integration with AWS services for data storage, as S3 Bucket.
 - **TensorFlow**: Machine learning library for building personalized recommendation systems based on user's history.
+
+
+## Technologies is going to be used
+- **Nodemailer**: Send neccessary mails to users etc.
+- **Jest**: Create unit tests
+- **Cron Jobs**
