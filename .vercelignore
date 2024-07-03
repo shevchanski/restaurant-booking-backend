@@ -1,0 +1,9 @@
+/*
+!dist
+!package.json
+!.env
+!vercel.json
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

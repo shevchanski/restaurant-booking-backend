@@ -1,0 +1,18 @@
+# files related to npm & project
+node_modules
+package-lock.json
+
+
+
+
+# ignore vercel dir | created if project linked & diployed to vercel
+.vercel
+
+#ignore production directory
+dist
+
+# ignore environments
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
