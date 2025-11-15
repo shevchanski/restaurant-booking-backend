@@ -27,3 +27,6 @@ The API handles searching requests, users registrations and authentications, and
 - **Nodemailer**: Send neccessary mails to users etc.
 - **Jest**: Create unit tests
 - **Cron Jobs**
+
+## GitHub Actions
+Going to define CI/CD workflows using GitHub Actions
