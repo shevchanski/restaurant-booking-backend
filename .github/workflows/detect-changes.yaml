@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0
 
       - id: changes-detecting-step
-        name: Detecting changes between ${{ input.base }} and ${{ input.head }}
+        name: Detecting changes between ${{ inputs.base }} and ${{ inputs.head }}
         run: echo "CHANGED_FILES=$(git diff --name-only origin/${{ inputs.base }}...${{ inputs.head }} | grep -E '.*\.[tj]sx?$')" >> $GITHUB_OUTPUT
 
       - run: echo "${CHANGED_FILES}"
