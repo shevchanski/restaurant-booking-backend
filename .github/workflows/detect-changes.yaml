@@ -35,4 +35,3 @@ jobs:
         run: echo "CHANGED_FILES=$(git diff --name-only origin/${{ inputs.base }}...${{ inputs.head }} | grep -E '.*\.[tj]sx?$')" >> $GITHUB_OUTPUT
 
       - run: echo "${{ steps.changes-detecting-step.outputs.CHANGED_FILES }}"
-      - run: echo "${{ outputs.changed-files }}"
