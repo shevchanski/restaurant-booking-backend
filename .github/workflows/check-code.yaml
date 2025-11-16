@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   detect-changes:
-    uses: ./.github/workflows/detect-changes.yaml@v1
+    uses: ./.github/workflows/detect-changes.yaml
     with:
       base: ${{ github.base_ref }}
 
