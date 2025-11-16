@@ -71,6 +71,9 @@
     "mongoose": "^8.2.1",
     "rimraf": "^5.0.7"
   },
+  "engines": {
+    "node": "^20.0.0"
+  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
