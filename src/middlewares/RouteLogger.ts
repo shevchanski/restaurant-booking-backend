@@ -8,5 +8,7 @@ export default function RouteLogger(
   // eslint-disable-next-line no-console
   console.log(`[Logger] - Request on route ${req.url} method ${req.method}`);
 
+  console.warn('Some info here');
+
   next();
 }
