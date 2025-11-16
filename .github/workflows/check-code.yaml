@@ -3,6 +3,9 @@ run-name: Checking code in ${{ github.head_ref }} PR
 
 on: pull_request
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -12,15 +15,8 @@ jobs:
     uses: ./.github/workflows/detect-changes.yaml
     with:
       base: ${{ github.base_ref }}
+      head: ${{ github.head_ref }}
 
-  echo-changes:
-    needs: detect-changes
-    runs-on: ubuntu-24.04-arm
-    steps:
-      - name: Output detected changes
-        run: echo "Detected changes ${{ needs.detect-changes.outputs.changed-files }}"
-    
-    
   lint:
     needs: detect-changes
     name: Linting code
@@ -34,4 +30,4 @@ jobs:
         run: npm i eslint@8
 
       - name: Linting changed files
-        run: npm i eslint@8
+        run: npm run lint ${{ needs.detect-changes.outputs.changed-files }}

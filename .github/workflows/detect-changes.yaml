@@ -6,6 +6,10 @@ on:
       base:
         required: true
         type: string
+      head:
+        required: false
+        type: string
+        default: 'HEAD'
     outputs:
       changed-files:
         description: 'Changed files based on diff between base and HEAD'
@@ -21,18 +25,13 @@ jobs:
     outputs:
       changed-files: ${{ steps.changes-detecting-step.outputs.CHANGED_FILES }}
     steps:
-      - run: echo "Start detecting changes between ${{ inputs.base }} and HEAD"
-
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - run: git diff --name-only
-
-      - run: git log --oneline
-
       - id: changes-detecting-step
-        name: Detecting changes
-        run: echo "CHANGED_FILES=$(git diff --name-only origin/${{ inputs.base }}...HEAD | grep -E '.*\.[tj]sx?$')" >> $GITHUB_OUTPUT
+        name: Detecting changes between ${{ input.base }} and ${{ input.head }}
+        run: echo "CHANGED_FILES=$(git diff --name-only origin/${{ inputs.base }}...${{ inputs.head }} | grep -E '.*\.[tj]sx?$')" >> $GITHUB_OUTPUT
 
       - run: echo "${CHANGED_FILES}"
