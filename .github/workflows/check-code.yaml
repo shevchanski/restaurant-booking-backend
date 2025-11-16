@@ -1,0 +1,29 @@
+name: Check code
+run-name: Checking code in ${{ github.head_ref }} PR
+
+on: pull_request
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    uses: ./.github/workflows/detect-changes.yaml@v1
+    with:
+      base: ${{ github.base_ref }}
+
+  lint:
+    needs: detect-changes
+    name: Linting code
+    if: needs.detect-changes.outputs.changed-files
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install lint tool
+        run: npm i eslint@8
+
+      - name: Linting changed files
+        run: npm i eslint@8

@@ -1,0 +1,29 @@
+name: Detect code changes
+
+on:
+  workflow_call:
+    inputs:
+      base:
+        required: true
+        type: string
+    outputs:
+      changed-files:
+        description: 'Changed files based on diff between base and HEAD'
+        value: ${{ jobs.detect-changes.outputs.changed-files }}
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      changed-files: ${{ steps.changes-detecting-step.outputs.CHANGED_FILES }}
+    steps:
+      - run: echo "Start detecting changes between ${{ inputs.base }} and HEAD"
+
+      - run: actions/checkout@v4
+
+      - id: changes-detecting-step
+        name: Detecting changes
+        run: echo "CHANGED_FILES=$(git diff --name-only origin/${{ inputs.base }}...HEAD | grep -E '.*\.[tj]sx?$')" >> $GITHUB_OUTPUT
