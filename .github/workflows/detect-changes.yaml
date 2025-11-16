@@ -22,7 +22,7 @@ jobs:
     steps:
       - run: echo "Start detecting changes between ${{ inputs.base }} and HEAD"
 
-      - run: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - id: changes-detecting-step
         name: Detecting changes
