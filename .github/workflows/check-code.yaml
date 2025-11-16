@@ -13,6 +13,14 @@ jobs:
     with:
       base: ${{ github.base_ref }}
 
+  echo-changes:
+    needs: detect-changes
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Output detected changes
+        run: echo "Detected changes ${{ needs.detect-changes.outputs.changed-files }}"
+    
+    
   lint:
     needs: detect-changes
     name: Linting code
