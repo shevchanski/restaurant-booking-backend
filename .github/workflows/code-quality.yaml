@@ -19,7 +19,5 @@ jobs:
         with:
           version: 2.3.6
 
-      - run: ls -a
-
       - name: Run Biome
-        run: biome ci --changed --no-errors-on-unmatched
+        run: biome ci --changed --no-errors-on-unmatched --since=origin/${{ github.base_ref }}
