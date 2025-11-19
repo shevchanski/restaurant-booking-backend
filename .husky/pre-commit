@@ -1,1 +1,2 @@
-npm run lint && npm run test
+pnpm run check:staged
+pnpm run test
