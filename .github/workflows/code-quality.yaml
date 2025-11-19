@@ -20,4 +20,4 @@ jobs:
           version: 2.3.6
 
       - name: Run Biome
-        run: biome ci --changed --no-errors-on-unmatched --since=origin/${{ github.base_ref }}
+        run: biome ci --changed --no-errors-on-unmatched --since=${{ github.base_ref }}
