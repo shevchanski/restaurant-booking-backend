@@ -10,5 +10,7 @@ export default function RouteLogger(
 
   console.warn("some data");
 
+  console.error("message error");
+
   next();
 }
