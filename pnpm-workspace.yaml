@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - bcrypt
+  - '@tensorflow/tfjs-node'
+  - aws-sdk
+  - core-js
