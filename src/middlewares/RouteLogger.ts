@@ -1,12 +1,16 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 
 export default function RouteLogger(
   req: Request,
-  res: Response,
-  next: NextFunction
+  _: Response,
+  next: NextFunction,
 ) {
-  // eslint-disable-next-line no-console
+  // biome-ignore lint: this console is used to log the request made to API
   console.log(`[Logger] - Request on route ${req.url} method ${req.method}`);
+
+  console.warn("some data");
+
+  console.error("message error");
 
   next();
 }
