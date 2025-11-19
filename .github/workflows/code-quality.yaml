@@ -20,4 +20,5 @@ jobs:
         uses: mongolyy/reviewdog-action-biome@v2.5.0
         with:
           github_token: ${{ secrets.github_token }}
+          fail_level: error
           biome_flags: --changed --no-errors-on-unmatched --since=origin/${{ github.base_ref }}
