@@ -13,6 +13,7 @@ dist
 
 # ignore environments
 .env*
+!.env.example
 .flaskenv*
 !.env.project
 !.env.vault
