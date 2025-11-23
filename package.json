@@ -59,8 +59,6 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^0.44.0",
-    "@tensorflow/tfjs": "^4.19.0",
-    "@tensorflow/tfjs-node": "^4.19.0",
     "@typegoose/typegoose": "^12.2.0",
     "apicache": "^1.6.3",
     "aws-sdk": "^2.1634.0",
