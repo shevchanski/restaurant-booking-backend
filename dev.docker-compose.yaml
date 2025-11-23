@@ -1,0 +1,40 @@
+services:
+#  mongo:
+#    image: mongo:8
+#    restart: unless-stopped
+#    ports:
+#      - "27017"
+#    volumes:
+#      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+#    depends_on:
+#      - mongo
+    environment:
+      # URI to connect to mongodb in mongo service
+#      MONGODB_SERVER_URI: mongodb://mongo:27017/
+      NODE_ENV: dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+
+        - action: sync+restart
+          path: ./.env.local
+          target: /app/.env.local
+
+        - action: rebuild
+          path: ./package.json
+
+volumes:
+  mongo-data:
