@@ -91,7 +91,7 @@
       }
     }
   },
-  "javascript": { "formatter": { "quoteStyle": "double" } },
+  "javascript": { "formatter": { "quoteStyle": "single" } },
   "overrides": [
     {
       "includes": ["*.ts", "*.tsx", "*.mts", "*.cts"],
