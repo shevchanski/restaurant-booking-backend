@@ -5,14 +5,15 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "dotenvx run -f .env.test -- jest",
-    "dev": "dotenvx run -f .env.local -- nodemon ./src/app.ts",
-    "prepare": "husky",
     "commitlint": "commitlint --verbose --edit",
     "lint": "biome lint",
     "check:staged": "biome check --staged --write --no-errors-on-unmatched",
     "cm": "cz",
+    "dev": "dotenvx run -f .env.local -- nodemon ./src/app.ts",
+    "build:image": "docker build --tag 'restaurant-booking-be' .",
+    "run:image": "docker run -p 3000:3000 --add-host=host.docker.internal:host-gateway 'restaurant-booking-be'",
     "build": "rimraf dist && npx tsc",
-    "start": "node dist/app.js",
+    "start": "dotenvx run -f .env -- node dist/app.js",
     "start:local": "dotenvx run -f .env.local -- node dist/app.js",
     "deploy": "rimraf dist && npx tsc && vercel",
     "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
@@ -82,5 +83,9 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10"
   }
 }
