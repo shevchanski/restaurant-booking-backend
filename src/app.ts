@@ -21,8 +21,6 @@ import RouteLogger from './middlewares/RouteLogger';
 
 const app = express();
 
-console.log("NODE-env", process.env.NODE_ENV);
-
 if (process.env.NODE_ENV !== 'test') {
   mongoose.set({ debug: true });
   mongoose.connect(DatabaseConfig.MONGO_PROD_URI);
