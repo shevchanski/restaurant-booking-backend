@@ -33,12 +33,9 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.target_env
 
-    env:
-      TARGET_ENV: ${{ needs.prepare.outputs.target_env }}
-
-    environment: ${{ env.TARGET_ENV }}
+    environment: ${{ needs.prepare.outputs.target_env }}
     concurrency:
-      group: deploy-${{ env.TARGET_ENV }}
+      group: deploy-${{ needs.prepare.outputs.target_env }}
       cancel-in-progress: true
     permissions:
       id-token: write
