@@ -8,11 +8,17 @@ on:
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
+  TARGET_ENV: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+
+concurrency:
+  group: deploy-${{ env.TARGET_ENV }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    environment: ${{ env.TARGET_ENV }}
     permissions:
       id-token: write
       contents: read
@@ -22,10 +28,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Log envs
-        run: echo ${{ env }}
+        run: echo "region - ${{ env.AWS_REGION }}, target_env=${{ env.TARGET_ENV }}"
 
       - name: Log vars
-        run: echo ${{ vars }}
+        run: echo "region - ${{ vars.AWS_REGION }}"
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
