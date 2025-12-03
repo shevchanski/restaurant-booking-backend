@@ -1,10 +1,10 @@
-import { Response } from "express";
+import { Response } from 'express';
 
-import { responseStatus } from "../../../configs/resStatus.config";
-import errorWrapper from "../../../errors/errorWrapper";
-import { getRestsByIdsArray } from "../../../services/db/getRestsByIdsArray.service";
+import { responseStatus } from '../../../configs/resStatus.config';
+import errorWrapper from '../../../errors/errorWrapper';
+import { getRestsByIdsArray } from '../../../services/db/getRestsByIdsArray.service';
 // import getRecommendations from "../../../tensorFlow/rsModel";
-import { IRequest } from "../../../types/query.types";
+import { IRequest } from '../../../types/query.types';
 
 export const returnUserRecommendations = errorWrapper(
   async (req: IRequest, res: Response) => {

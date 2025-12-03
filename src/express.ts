@@ -1,17 +1,17 @@
-import express from "express";
+import express from 'express';
 
-import apiRouter from "./api/routes";
+import apiRouter from './api/routes';
 import {
   globalErrorHandler,
   notFoundRouteHandler,
-} from "./errors/errorHandlers";
-import RouteLogger from "./middlewares/RouteLogger";
+} from './errors/errorHandlers';
+import RouteLogger from './middlewares/RouteLogger';
 
 const app = express();
 
 app.use(RouteLogger);
 
-app.use("/api/v1", apiRouter);
+app.use('/api/v1', apiRouter);
 
 // to support backward compatibility
 app.use(apiRouter);

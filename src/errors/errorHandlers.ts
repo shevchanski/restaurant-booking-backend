@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 
-import { WellKnownErrorTypes } from "../configs/error.config";
-import { responseStatus } from "../configs/resStatus.config";
-import APIError from "./APIError";
-import errorWrapper from "./errorWrapper";
-import WellKnownError from "./WellKnownError";
+import { WellKnownErrorTypes } from '../configs/error.config';
+import { responseStatus } from '../configs/resStatus.config';
+import APIError from './APIError';
+import errorWrapper from './errorWrapper';
+import WellKnownError from './WellKnownError';
 
 const notFoundRouteHandler = errorWrapper(
   (_req: Request, _res: Response, _next: NextFunction) => {
