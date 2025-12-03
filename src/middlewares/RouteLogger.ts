@@ -1,12 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import morgan from 'morgan';
 
-export default function RouteLogger(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  // eslint-disable-next-line no-console
-  console.log(`[Logger] - Request on route ${req.url} method ${req.method}`);
+import { NODE_ENV_NAMES } from '../configs/global.config';
+import { NODE_ENV } from '../configs/vars';
 
-  next();
-}
+const morganFormat = NODE_ENV === NODE_ENV_NAMES.DEV ? 'dev' : 'combined';
+
+const RouteLogger = morgan(morganFormat);
+
+export default RouteLogger;

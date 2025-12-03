@@ -5,14 +5,16 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "dotenvx run -f .env.test -- jest",
-    "dev": "dotenvx run -f .env.local -- nodemon ./src/app.ts",
-    "prepare": "husky",
     "commitlint": "commitlint --verbose --edit",
     "lint": "biome lint",
     "check:staged": "biome check --staged --write --no-errors-on-unmatched",
     "cm": "cz",
+    "dev": "dotenvx run -f .env.local -- nodemon ./src/app.ts",
+    "dev:compose": "docker compose -f ./dev.docker-compose.yaml up --build --watch",
+    "build:image": "docker build --tag 'restaurant-booking-be' .",
+    "run:image": "docker run -p 3000:3000 --add-host=host.docker.internal:host-gateway 'restaurant-booking-be'",
     "build": "rimraf dist && npx tsc",
-    "start": "node dist/app.js",
+    "start": "dotenvx run -f .env -- node dist/app.js",
     "start:local": "dotenvx run -f .env.local -- node dist/app.js",
     "deploy": "rimraf dist && npx tsc && vercel",
     "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
@@ -41,6 +43,7 @@
     "@types/express-fileupload": "^1.5.0",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.10",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
     "@typescript-eslint/parser": "^7.1.0",
@@ -59,8 +62,6 @@
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^0.44.0",
-    "@tensorflow/tfjs": "^4.19.0",
-    "@tensorflow/tfjs-node": "^4.19.0",
     "@typegoose/typegoose": "^12.2.0",
     "apicache": "^1.6.3",
     "aws-sdk": "^2.1634.0",
@@ -71,6 +72,7 @@
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.1",
+    "morgan": "^1.10.1",
     "rimraf": "^5.0.7"
   },
   "config": {
@@ -82,5 +84,9 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10"
   }
 }
