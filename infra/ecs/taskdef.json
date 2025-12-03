@@ -4,8 +4,8 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::123456789012:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::123456789012:role/TaskRole",
+  "executionRoleArn": "arn:aws:iam::816122495557:role/ecs-tablebar-api-task-execution-role",
+  "taskRoleArn": "arn:aws:iam::816122495557:role/tablebar-api-ecs-role",
   "containerDefinitions": [
     {
       "name": "tablebar-api",
