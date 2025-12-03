@@ -9,7 +9,7 @@ on:
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
   ECS_SERVICE: ${{ vars.ECS_SERVICE }}
-  ECS_CLUSTER: ${{ vars.ECS_SERVICE }}
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
 
 jobs:
   prepare:
@@ -62,10 +62,6 @@ jobs:
       - name: Login to Amazon ECR
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition etap-development --query taskDefinition > task-definition.json
 
       - name: Build, tag, and push image
         id: build-image
