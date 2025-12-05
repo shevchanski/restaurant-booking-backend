@@ -61,7 +61,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "^0.44.0",
+    "@dotenvx/dotenvx": "^1.51.1",
     "@typegoose/typegoose": "^12.2.0",
     "apicache": "^1.6.3",
     "aws-sdk": "^2.1634.0",
@@ -73,7 +73,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.1",
     "morgan": "^1.10.1",
-    "rimraf": "^5.0.7"
+    "rimraf": "^6.0.1"
   },
   "config": {
     "commitizen": {
