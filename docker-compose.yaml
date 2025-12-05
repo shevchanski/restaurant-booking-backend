@@ -1,21 +1,21 @@
 services:
-#  mongo:
-#    image: mongo:8
-#    restart: unless-stopped
-#    ports:
-#      - "27017"
-#    volumes:
-#      - mongo-data:/data/db
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
 
   backend:
     build:
       context: .
       dockerfile: ./dev.Dockerfile
-#    depends_on:
-#      - mongo
+    depends_on:
+      - mongo
     environment:
-      # URI to connect to mongodb in mongo service
-#      MONGODB_SERVER_URI: mongodb://mongo:27017/
+#       URI to connect to mongodb in mongo service
+      MONGODB_SERVER_URI: mongodb://mongo:27017/
       NODE_ENV: dev
     extra_hosts:
       - "host.docker.internal:host-gateway"
