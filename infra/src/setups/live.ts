@@ -72,17 +72,67 @@ const taskRole = new aws.iam.Role(`${APP_NAME}-${stack}-task-role`, {
   }),
 });
 
+const logGroup = pulumi.output(
+  new aws.cloudwatch.LogGroup(`${APP_NAME}-${stack}-lg`, {
+    name: `/ecs/${APP_NAME}-${stack}`,
+    retentionInDays: 30,
+  }),
+);
+
+const logGroupArnWithStreams = logGroup.apply((lg) =>
+  awsUtil.createArtForService(AWS_SERVICES.LOGS, `${lg.name}:*`),
+);
+
+const execLogPolicy = aws.iam.getPolicyDocumentOutput({
+  statements: [
+    {
+      effect: 'Allow',
+      actions: [
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+        'logs:DescribeLogStreams',
+      ],
+      resources: [logGroupArnWithStreams],
+    },
+  ],
+}).json;
+
+new aws.iam.RolePolicy(`${APP_NAME}-${stack}-exec-logs`, {
+  role: execRole.name,
+  policy: execLogPolicy,
+});
+
 // Опис контейнера з environmentFiles і secrets
-const container = JSON.stringify([
-  {
-    name: 'api',
-    image: ECS_IMAGE,
-    essential: true,
-    portMappings: [{ containerPort: ECS_PORT }],
-    environment: [{ name: 'NODE_ENV', value: stack }],
-    secrets: [...ecsParamsDefinition],
-  },
-]);
+const container = pulumi.all([logGroup.name]).apply(([lgName]) =>
+  JSON.stringify([
+    {
+      name: 'api',
+      image: ECS_IMAGE,
+      essential: true,
+      portMappings: [{ containerPort: ECS_PORT }],
+      environment: [{ name: 'NODE_ENV', value: stack }],
+      secrets: [...ecsParamsDefinition],
+      logConfiguration: {
+        logDriver: 'awslogs',
+        options: {
+          'awslogs-group': lgName,
+          'awslogs-region': region,
+          'awslogs-stream-prefix': 'api', // префікс для потоків
+        },
+      },
+      healthCheck: {
+        command: [
+          'CMD-SHELL',
+          `curl -f http://localhost:${ECS_PORT}/ping || exit 1`,
+        ],
+        interval: 30,
+        timeout: 5,
+        retries: 3,
+        startPeriod: 10,
+      },
+    },
+  ]),
+);
 
 // Task Definition (Fargate)
 const task = new aws.ecs.TaskDefinition(`${APP_NAME}-${stack}-taskdef`, {
@@ -142,6 +192,10 @@ const svc = new aws.ecs.Service(`${APP_NAME}-${stack}-svc`, {
     assignPublicIp: true,
     subnets: subnets.ids,
     securityGroups: [sg.id],
+  },
+  deploymentCircuitBreaker: {
+    enable: true,
+    rollback: true,
   },
 });
 
