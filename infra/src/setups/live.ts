@@ -8,7 +8,8 @@ import { AWS_SERVICES, AwsUtil } from '../utils/aws';
 const stack = pulumi.getStack();
 const appConfig = new pulumi.Config('app');
 
-const APP_NAME = appConfig.get('name');
+const APP_NAME = appConfig.require('name');
+const ECS_IMAGE = appConfig.require('image');
 const ECS_PORT = 3000;
 
 const region = aws.config.region || 'eu-north-1';
@@ -75,8 +76,7 @@ const taskRole = new aws.iam.Role(`${APP_NAME}-${stack}-task-role`, {
 const container = JSON.stringify([
   {
     name: 'api',
-    image:
-      appConfig.get('image') || 'public.ecr.aws/amazonlinux/amazonlinux:latest',
+    image: ECS_IMAGE,
     essential: true,
     portMappings: [{ containerPort: ECS_PORT }],
     environment: [{ name: 'NODE_ENV', value: stack }],

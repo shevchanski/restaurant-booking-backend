@@ -8,8 +8,6 @@ on:
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
-  ECS_SERVICE: ${{ vars.ECS_SERVICE }}
-  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
 
 jobs:
   prepare:
@@ -17,15 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       target_env: ${{ steps.define-env.outputs.env_name }}
+      pulumi_stack: ${{ steps.define-env.outputs.pulumi_stack }}
     steps:
       - id: define-env
         run: |
           case ${{ github.ref_name }} in
             main)
               echo "env_name=production" >> "$GITHUB_OUTPUT"    
+              echo "pulumi_stack=prod" >> "$GITHUB_OUTPUT"    
               ;;
             dev)
               echo "env_name=staging" >> "$GITHUB_OUTPUT"    
+              echo "pulumi_stack=stg" >> "$GITHUB_OUTPUT"    
               ;;
           esac
 
@@ -49,15 +50,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: "pnpm"
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Sts GetCallerIndentity
-        run: |
-          aws sts get-caller-identity
 
       - name: Login to Amazon ECR
         id: ecr-login
@@ -74,19 +82,21 @@ jobs:
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
           echo "IMAGE=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      # Keep a baseline task definition in the repo and render it with the new image
-      - name: Render Amazon ECS task definition
-        id: taskdef
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: infra/ecs/taskdef.json
-          container-name: ${{ vars.ECS_CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.IMAGE }}
+      - name: Install dependencies
+        working-directory: infra
+        run: pnpm install --frozen-lockfile
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.taskdef.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: Setup Pulumi
+        uses: pulumi/setup-pulumi@v3
+
+      - name: Pulumi infra up (${{ env.PULUMI_STACK }})
+        working-directory: infra
+        env:
+          PULUMI_STACK: ${{ needs.prepare.outputs.pulumi_stack }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: |
+          pulumi stack select ${{ env.PULUMI_STACK }}
+          pulumi config set aws:region ${{ env.AWS_REGION }}
+          pulumi config set app:image "${{ steps.build-image.outputs.IMAGE }}"
+          ${{ vars.API_APP_NAME }} && pulumi config set app:name "${{ vars.API_APP_NAME }}"
+          pulumi up --yes
