@@ -8,3 +8,5 @@ dist
 .gitignore
 
 *.md
+
+mise.*.toml

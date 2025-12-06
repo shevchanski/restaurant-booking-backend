@@ -2,3 +2,6 @@ onlyBuiltDependencies:
   - aws-sdk
   - bcrypt
   - core-js
+
+packages:
+  - infra
