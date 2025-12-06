@@ -88,15 +88,14 @@ jobs:
 
       - name: Setup Pulumi
         uses: pulumi/actions@v6
-
-      - name: Pulumi infra up (${{ env.PULUMI_STACK }})
-        working-directory: infra
         env:
-          PULUMI_STACK: ${{ needs.prepare.outputs.pulumi_stack }}
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-        run: |
-          pulumi stack select ${{ env.PULUMI_STACK }}
-          pulumi config set aws:region ${{ env.AWS_REGION }}
-          pulumi config set app:image "${{ steps.build-image.outputs.IMAGE }}"
-          ${{ vars.API_APP_NAME }} && pulumi config set app:name "${{ vars.API_APP_NAME }}"
-          pulumi up --yes
+        with:
+          command: up
+          stack-name: ${{ needs.prepare.outputs.pulumi_stack }}
+          work-dir: infra
+          comment-on-summary: true
+          config-map: |
+            aws:region=${{ env.AWS_REGION }}
+            app:image=${{ steps.build-image.outputs.IMAGE }}
+            app:name=${{ vars.API_APP_NAME }}
