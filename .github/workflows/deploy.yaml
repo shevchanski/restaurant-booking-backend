@@ -87,7 +87,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Setup Pulumi
-        uses: pulumi/setup-pulumi@v3
+        uses: pulumi/actions@v6
 
       - name: Pulumi infra up (${{ env.PULUMI_STACK }})
         working-directory: infra
