@@ -14,7 +14,7 @@
     "build:image": "docker build --tag 'restaurant-booking-be' .",
     "run:image": "docker run -p 3000:3000 --add-host=host.docker.internal:host-gateway 'restaurant-booking-be'",
     "build": "rimraf dist && npx tsc",
-    "start": "dotenvx run -f .env -- node dist/app.js",
+    "start": "node dist/app.js",
     "start:local": "dotenvx run -f .env.local -- node dist/app.js",
     "deploy": "rimraf dist && npx tsc && vercel",
     "db:seed-rests": "dotenvx run -f .env.local -- ts-node ./src/utils/seed-rests.ts"
