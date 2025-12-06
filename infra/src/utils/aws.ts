@@ -4,10 +4,23 @@ import * as pulumi from '@pulumi/pulumi';
 
 export enum AWS_SERVICES {
   SSM = 'ssm',
+  LOGS = 'logs',
 }
 
-const RESOURCE_NAME_BY_SERVICE: Record<AWS_SERVICES, string> = {
-  [AWS_SERVICES.SSM]: 'parameter',
+type ServiceConfig = {
+  resourceName: string;
+  joiner: string;
+};
+
+const CONFIG_BY_SERVICE: Record<AWS_SERVICES, ServiceConfig> = {
+  [AWS_SERVICES.SSM]: {
+    resourceName: 'parameter',
+    joiner: '/',
+  },
+  [AWS_SERVICES.LOGS]: {
+    resourceName: 'log-group',
+    joiner: ':',
+  },
 };
 
 type AwsUtilArgs = {
@@ -29,11 +42,13 @@ export class AwsUtil {
   }
 
   createArtForService(service: AWS_SERVICES, resourcePath: string) {
-    const resourceName = RESOURCE_NAME_BY_SERVICE[service];
+    const { resourceName, joiner } = CONFIG_BY_SERVICE[service];
 
     const accountId = this.awsIdentity.accountId;
     const region = this.region;
 
-    return pulumi.interpolate`arn:aws:${service}:${region}:${accountId}:${join(`${resourceName}/`, resourcePath)}`;
+    const resource = [resourceName, resourcePath].join(joiner);
+
+    return pulumi.interpolate`arn:aws:${service}:${region}:${accountId}:${join(resource)}`;
   }
 }
