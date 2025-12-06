@@ -96,6 +96,8 @@ jobs:
           work-dir: infra
           comment-on-summary: true
           config-map: |
-            aws:region=${{ env.AWS_REGION }}
-            app:image=${{ steps.build-image.outputs.IMAGE }}
-            app:name=${{ vars.API_APP_NAME }}
+            {
+              "aws:region": { value: ${{ env.AWS_REGION }} },
+              "app:image": { value: ${{ steps.build-image.outputs.IMAGE }} },
+              "app:name": { value: ${{ vars.API_APP_NAME }} }
+            }
