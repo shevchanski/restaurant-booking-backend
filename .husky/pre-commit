@@ -1,2 +1,5 @@
+#!/bin/bash
 pnpm run check:staged
+git update-index --again # if staged files changed, then it stages them again
+
 pnpm run test
