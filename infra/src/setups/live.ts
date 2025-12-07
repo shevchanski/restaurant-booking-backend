@@ -1,4 +1,5 @@
 import * as aws from '@pulumi/aws';
+import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
 
 import ecsParams from '../../ecs-params.json';
@@ -9,8 +10,9 @@ const stack = pulumi.getStack();
 const appConfig = new pulumi.Config('app');
 
 const APP_NAME = appConfig.require('name');
-const ECS_IMAGE = appConfig.require('image');
 const ECS_PORT = 3000;
+
+const RESOURCE_PREFIX = `${APP_NAME}-${stack}`;
 
 const region = aws.config.region || 'eu-north-1';
 
@@ -27,18 +29,32 @@ const ecsParamsDefinition = ecsParams.map((paramName) => {
   };
 });
 
+const repo = new awsx.ecr.Repository(`${RESOURCE_PREFIX}-repo`, {
+  forceDelete: true,
+});
+
+const image = new awsx.ecr.Image(`${RESOURCE_PREFIX}-image`, {
+  repositoryUrl: repo.url,
+  context: '../',
+  platform: 'linux/amd64',
+});
+
+const loadBalancer = new awsx.lb.ApplicationLoadBalancer(
+  `${RESOURCE_PREFIX}-lb`,
+);
+
 // ECS кластер
-const cluster = new aws.ecs.Cluster(`${APP_NAME}-${stack}-cluster`, {});
+const cluster = new aws.ecs.Cluster(`${RESOURCE_PREFIX}-cluster`, {});
 
 // IAM: роль виконання (execution role) — читає S3 env-file, Secrets Manager і SSM
-const execRole = new aws.iam.Role(`${APP_NAME}-${stack}-exec-role`, {
+const execRole = new aws.iam.Role(`${RESOURCE_PREFIX}-exec-role`, {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'ecs-tasks.amazonaws.com',
   }),
 });
 
 // Managed policy для ECS execution
-new aws.iam.RolePolicyAttachment(`${APP_NAME}-${stack}-exec-managed`, {
+new aws.iam.RolePolicyAttachment(`${RESOURCE_PREFIX}-exec-managed`, {
   role: execRole.name,
   policyArn: aws.iam.ManagedPolicy.AmazonECSTaskExecutionRolePolicy,
 });
@@ -49,7 +65,7 @@ const paramsArnPrefix = awsUtil.createArtForService(
 );
 
 // Дозволи на S3/Secrets/SSM для підвантаження конфігів і секретів
-new aws.iam.RolePolicy(`${APP_NAME}-${stack}-exec-inline`, {
+new aws.iam.RolePolicy(`${RESOURCE_PREFIX}-exec-inline`, {
   role: execRole.name,
   policy: pulumi.all([paramsArnPrefix]).apply(
     ([paramsArn]) =>
@@ -66,14 +82,14 @@ new aws.iam.RolePolicy(`${APP_NAME}-${stack}-exec-inline`, {
 });
 
 // Task role (додайте доступи, якщо ваш застосунок звертається до AWS API)
-const taskRole = new aws.iam.Role(`${APP_NAME}-${stack}-task-role`, {
+const taskRole = new aws.iam.Role(`${RESOURCE_PREFIX}-task-role`, {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     Service: 'ecs-tasks.amazonaws.com',
   }),
 });
 
 const logGroup = pulumi.output(
-  new aws.cloudwatch.LogGroup(`${APP_NAME}-${stack}-lg`, {
+  new aws.cloudwatch.LogGroup(`${RESOURCE_PREFIX}-lg`, {
     name: `/ecs/${APP_NAME}-${stack}`,
     retentionInDays: 30,
   }),
@@ -97,46 +113,50 @@ const execLogPolicy = aws.iam.getPolicyDocumentOutput({
   ],
 }).json;
 
-new aws.iam.RolePolicy(`${APP_NAME}-${stack}-exec-logs`, {
+new aws.iam.RolePolicy(`${RESOURCE_PREFIX}-exec-logs`, {
   role: execRole.name,
   policy: execLogPolicy,
 });
 
 // Опис контейнера з environmentFiles і secrets
-const container = pulumi.all([logGroup.name]).apply(([lgName]) =>
-  JSON.stringify([
-    {
-      name: 'api',
-      image: ECS_IMAGE,
-      essential: true,
-      portMappings: [{ containerPort: ECS_PORT }],
-      environment: [{ name: 'NODE_ENV', value: stack }],
-      secrets: [...ecsParamsDefinition],
-      logConfiguration: {
-        logDriver: 'awslogs',
-        options: {
-          'awslogs-group': lgName,
-          'awslogs-region': region,
-          'awslogs-stream-prefix': 'api', // префікс для потоків
+const container = pulumi
+  .all([logGroup.name, image, loadBalancer])
+  .apply(([lgName, image, lb]) =>
+    JSON.stringify([
+      {
+        name: 'api',
+        image: image.imageUri,
+        essential: true,
+        portMappings: [
+          { containerPort: ECS_PORT, targetGroup: lb.defaultTargetGroup },
+        ],
+        environment: [{ name: 'NODE_ENV', value: stack }],
+        secrets: [...ecsParamsDefinition],
+        logConfiguration: {
+          logDriver: 'awslogs',
+          options: {
+            'awslogs-group': lgName,
+            'awslogs-region': region,
+            'awslogs-stream-prefix': 'api', // префікс для потоків
+          },
+        },
+        healthCheck: {
+          command: [
+            'CMD-SHELL',
+            `curl -f http://localhost:${ECS_PORT}/ping || exit 1`,
+          ],
+          interval: 30,
+          timeout: 5,
+          retries: 3,
+          startPeriod: 10,
         },
       },
-      healthCheck: {
-        command: [
-          'CMD-SHELL',
-          `curl -f http://localhost:${ECS_PORT}/ping || exit 1`,
-        ],
-        interval: 30,
-        timeout: 5,
-        retries: 3,
-        startPeriod: 10,
-      },
-    },
-  ]),
-);
+    ]),
+  );
 
 // Task Definition (Fargate)
-const task = new aws.ecs.TaskDefinition(`${APP_NAME}-${stack}-taskdef`, {
-  family: `${APP_NAME}-${stack}-api`,
+const task = new aws.ecs.TaskDefinition(`${RESOURCE_PREFIX}-taskdef`, {
+  family: `${RESOURCE_PREFIX}-api`,
   requiresCompatibilities: ['FARGATE'],
   networkMode: 'awsvpc',
   cpu: '256',
@@ -166,7 +186,7 @@ const subnets = vpc.apply((c) =>
 );
 
 // SG для доступу на 80/tcp
-const sg = new aws.ec2.SecurityGroup(`${APP_NAME}-${stack}-sg`, {
+const sg = new aws.ec2.SecurityGroup(`${RESOURCE_PREFIX}-sg`, {
   vpcId: vpc.id,
   ingress: [
     {
@@ -182,12 +202,9 @@ const sg = new aws.ec2.SecurityGroup(`${APP_NAME}-${stack}-sg`, {
 });
 
 // ECS Service без LB (для демо)
-const svc = new aws.ecs.Service(`${APP_NAME}-${stack}-svc`, {
+const svc = new awsx.ecs.FargateService(`${RESOURCE_PREFIX}-svc`, {
   cluster: cluster.arn,
   taskDefinition: task.arn,
-  desiredCount: 1,
-  launchType: 'FARGATE',
-  platformVersion: 'LATEST',
   networkConfiguration: {
     assignPublicIp: true,
     subnets: subnets.ids,
@@ -202,4 +219,5 @@ const svc = new aws.ecs.Service(`${APP_NAME}-${stack}-svc`, {
 // Виводи
 export const ecsCluster = cluster.name;
 export const taskDef = task.arn;
-export const serviceName = svc.name;
+export const serviceName = svc.service.name;
+export const url = pulumi.interpolate`http://${loadBalancer.loadBalancer.dnsName}`;
