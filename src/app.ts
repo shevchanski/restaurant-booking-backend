@@ -9,6 +9,8 @@ import app from './express';
 
 console.log("NODE-env", process.env.NODE_ENV);
 
+let testVar = '';
+
 if (process.env.NODE_ENV !== 'test') {
   mongoose.set({ debug: true });
   mongoose.connect(DatabaseConfig.MONGO_PROD_URI);
