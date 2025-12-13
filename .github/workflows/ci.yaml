@@ -1,0 +1,113 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  prepare:
+    name: Preparing for CI
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      target_env: ${{ steps.define-env.outputs.env_name }}
+      target_pulumi_stack: ${{ steps.define-env.outputs.target_pulumi_stack }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Installing dependencies
+        run: pnpm i
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prepare-output
+          path: |
+            node_modules/
+
+      - id: define-env
+        run: |
+          case ${{ github.base_ref }} in
+            main)
+              echo "env_name=production" >> "$GITHUB_OUTPUT"    
+              echo "target_pulumi_stack=prod" >> "$GITHUB_OUTPUT"    
+              ;;
+            dev)
+              echo "env_name=staging" >> "$GITHUB_OUTPUT"    
+              echo "target_pulumi_stack=stg" >> "$GITHUB_OUTPUT"    
+              ;;
+          esac
+
+  quality:
+    name: Checking code quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup Biome with reviewdog
+        uses: mongolyy/reviewdog-action-biome@v2.5.0
+        with:
+          github_token: ${{ secrets.github_token }}
+          fail_level: error
+          biome_flags: --changed --no-errors-on-unmatched --since=origin/${{ github.base_ref }}
+
+  test:
+    name: Running tests
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+    steps:
+      - name: Download prepare artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: prepare-output
+          path: .
+
+      - run: pnpm test
+
+  infraPreview:
+    name: Preparing infrastructure preview
+    runs-on: ubuntu-latest
+    environment: ${{ needs.prepare.outputs.target_env }}
+    needs:
+      - prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Install dependencies
+        working-directory: infra
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Pulumi
+        uses: pulumi/actions@v6
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        with:
+          command: preview
+          stack-name: ${{ needs.prepare.outputs.target_pulumi_stack }}
+          work-dir: infra
+          comment-on-summary: true
+          config-map: |
+            {
+              "target": { value: "live" },
+              "aws:region": { value: ${{ env.AWS_REGION }} },
+              "app:image": { value: ${{ steps.build-image.outputs.IMAGE }} },
+              "app:name": { value: ${{ vars.API_APP_NAME }} }
+            }
