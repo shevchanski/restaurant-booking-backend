@@ -2,12 +2,13 @@ name: CI
 
 on: pull_request
 
+permissions:
+  contents: read
+
 jobs:
   prepare:
     name: Preparing
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     outputs:
       target_env: ${{ steps.define-env.outputs.env_name }}
       target_pulumi_stack: ${{ steps.define-env.outputs.target_pulumi_stack }}
@@ -29,7 +30,6 @@ jobs:
     name: Checking code quality
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       pull-requests: write
     steps:
       - name: Checkout
@@ -68,6 +68,8 @@ jobs:
     environment: ${{ needs.prepare.outputs.target_env }}
     needs:
       - prepare
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
