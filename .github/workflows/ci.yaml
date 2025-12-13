@@ -80,6 +80,12 @@ jobs:
         working-directory: infra
         run: pnpm install --frozen-lockfile
 
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Preview infra with Pulumi
         uses: pulumi/actions@v6
         env:
