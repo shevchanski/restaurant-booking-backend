@@ -84,7 +84,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Preview infra with Pulumi
         uses: pulumi/actions@v6
@@ -98,7 +98,7 @@ jobs:
           config-map: |
             {
               "target": { value: "live" },
-              "aws:region": { value: ${{ env.AWS_REGION }} },
+              "aws:region": { value: ${{ vars.AWS_REGION }} },
               "app:image": { value: ${{ steps.build-image.outputs.IMAGE }} },
               "app:name": { value: ${{ vars.API_APP_NAME }} }
             }
