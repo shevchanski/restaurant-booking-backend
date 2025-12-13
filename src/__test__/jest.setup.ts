@@ -4,8 +4,10 @@ import mongoose from 'mongoose';
 
 // import { DatabaseConfig } from '../configs/db.config';
 
+let mongoServer: MongoMemoryServer;
+
 beforeAll(async () => {
-  const mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryServer.create();
 
   await mongoose.connect(mongoServer.getUri(), { dbName: 'tablebar-test-db' });
 });
@@ -20,4 +22,6 @@ afterAll(async () => {
   await Promise.all(promises);
 
   await mongoose.disconnect();
+
+  await mongoServer.stop();
 });
