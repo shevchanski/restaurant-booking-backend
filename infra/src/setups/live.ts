@@ -183,7 +183,7 @@ const taskRole = new aws.iam.Role(`${RESOURCE_PREFIX}-task-role`, {
 const ecsParamsDefinition = ecsParams.map((paramName) => {
   return {
     name: paramName,
-    valueFrom: `/${paramScope}/${paramName}`,
+    valueFrom: `${paramScope}/${paramName}`,
   };
 });
 
