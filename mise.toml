@@ -1,0 +1,16 @@
+[tools]
+node = "20"
+pnpm = "10"
+pulumi = "3"
+
+[tasks."infra:up"]
+description = "Start project infrastructure"
+run = "docker compose -p tablebar up -d"
+
+[tasks."infra:down"]
+description = "Stop project infrastructure"
+run = "docker compose -p tablebar down"
+
+[tasks."infra:clear"]
+description = "Stop project infrastructure"
+run = "docker volume rm tablebar_mongo-data"

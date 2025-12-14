@@ -1,0 +1,89 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  prepare:
+    name: Preparing...
+    runs-on: ubuntu-latest
+    outputs:
+      target_env: ${{ steps.define-env.outputs.env_name }}
+      pulumi_stack: ${{ steps.define-env.outputs.pulumi_stack }}
+    steps:
+      - id: define-env
+        run: |
+          case ${{ github.ref_name }} in
+            main)
+              echo "env_name=production" >> "$GITHUB_OUTPUT"    
+              echo "pulumi_stack=prod" >> "$GITHUB_OUTPUT"    
+              ;;
+            dev)
+              echo "env_name=staging" >> "$GITHUB_OUTPUT"    
+              echo "pulumi_stack=stg" >> "$GITHUB_OUTPUT"    
+              ;;
+          esac
+
+
+  deploy:
+    needs: prepare
+    if: needs.prepare.outputs.target_env
+
+    name: Deploying
+    runs-on: ubuntu-latest
+
+    environment: ${{ needs.prepare.outputs.target_env }}
+    concurrency:
+      group: deploy-${{ needs.prepare.outputs.target_env }}
+      cancel-in-progress: true
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: "pnpm"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install dependencies
+        working-directory: infra
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Pulumi
+        uses: pulumi/actions@v6
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        with:
+          command: up
+          stack-name: ${{ needs.prepare.outputs.pulumi_stack }}
+          work-dir: infra
+          comment-on-summary: true
+          config-map: |
+            {
+              "aws:region": { value: ${{ env.AWS_REGION }} },
+              "app:image": { value: ${{ steps.build-image.outputs.IMAGE }} },
+              "app:name": { value: ${{ vars.API_APP_NAME }} },
+              "grafanaAdminPassword": { value: ${{ vars.GRAFANA_ADMIN_PASSWORD }} }
+            }

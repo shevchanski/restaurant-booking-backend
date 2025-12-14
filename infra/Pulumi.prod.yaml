@@ -1,0 +1,4 @@
+config:
+  target: live
+  aws:region: eu-north-1
+  app:name: tablebar

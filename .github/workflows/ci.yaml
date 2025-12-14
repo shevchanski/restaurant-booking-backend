@@ -1,0 +1,107 @@
+name: CI
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Preparing
+    runs-on: ubuntu-latest
+    outputs:
+      target_env: ${{ steps.define-env.outputs.env_name }}
+      target_pulumi_stack: ${{ steps.define-env.outputs.target_pulumi_stack }}
+    steps:
+      - id: define-env
+        run: |
+          case ${{ github.base_ref }} in
+            main)
+              echo "env_name=production" >> "$GITHUB_OUTPUT"    
+              echo "target_pulumi_stack=prod" >> "$GITHUB_OUTPUT"    
+              ;;
+            dev)
+              echo "env_name=staging" >> "$GITHUB_OUTPUT"    
+              echo "target_pulumi_stack=stg" >> "$GITHUB_OUTPUT"    
+              ;;
+          esac
+
+  quality:
+    name: Checking code quality
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Setup Biome with reviewdog
+        uses: mongolyy/reviewdog-action-biome@v2.5.0
+        with:
+          github_token: ${{ secrets.github_token }}
+          fail_level: error
+          biome_flags: --changed --no-errors-on-unmatched --since=origin/${{ github.base_ref }}
+
+  test:
+    name: Running tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Install dependencies
+        working-directory: infra
+        run: pnpm install --frozen-lockfile
+
+      - run: pnpm test
+
+  infraPreview:
+    name: Preparing infrastructure preview
+    runs-on: ubuntu-latest
+    environment: ${{ needs.prepare.outputs.target_env }}
+    needs:
+      - prepare
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Install dependencies
+        working-directory: infra
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Preview infra with Pulumi
+        uses: pulumi/actions@v6
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        with:
+          command: preview
+          stack-name: ${{ needs.prepare.outputs.target_pulumi_stack }}
+          work-dir: infra
+          comment-on-summary: true
+          config-map: |
+            {
+              "target": { value: "live" },
+              "aws:region": { value: ${{ vars.AWS_REGION }} },
+              "app:image": { value: ${{ steps.build-image.outputs.IMAGE }} },
+              "app:name": { value: ${{ vars.API_APP_NAME }} },
+              "grafanaAdminPassword": { value: ${{ vars.GRAFANA_ADMIN_PASSWORD }} }
+            }
