@@ -6,7 +6,10 @@ const target = config.require('target');
 function loadImplementation() {
   switch (target) {
     case 'live':
-      return require('./src/setups/live');
+      return {
+        ...require('./src/setups/observability'),
+        ...require('./src/setups/live'),
+      };
     case 'dev':
       return require('./src/setups/dev');
     default:

@@ -1,9 +1,10 @@
 import * as aws from '@pulumi/aws';
 import * as awsx from '@pulumi/awsx';
 import * as pulumi from '@pulumi/pulumi';
+import { execSync } from 'child_process';
 
 import ecsParams from '../../ecs-params.json';
-
+import { CloudWatch } from '../services/aws/cloud-watch';
 import { AWS_SERVICES, AwsUtil } from '../utils/aws';
 
 const stack = pulumi.getStack();
@@ -11,6 +12,11 @@ const appConfig = new pulumi.Config('app');
 
 const APP_NAME = appConfig.require('name');
 const ECS_PORT = 3000;
+// 1. Отримуємо git commit hash (або беремо з env у CI)
+const gitCommit =
+  process.env.GITHUB_SHA ??
+  execSync('git rev-parse --short HEAD').toString().trim();
+const imageTag = gitCommit;
 
 const RESOURCE_PREFIX = `${APP_NAME}-${stack}`;
 
@@ -22,25 +28,111 @@ const awsUtil = new AwsUtil({ region, awsIdentity });
 
 const paramScope = `/${APP_NAME}/${stack}`;
 
-const ecsParamsDefinition = ecsParams.map((paramName) => {
-  return {
-    name: paramName,
-    valueFrom: `${paramScope}/${paramName}`,
-  };
-});
+// --------------- REPO & IMAGE ----------------
 
 const repo = new awsx.ecr.Repository(`${RESOURCE_PREFIX}-repo`, {
   forceDelete: true,
 });
 
+// new aws.ecr.RepositoryPolicy(`${RESOURCE_PREFIX}-repo-policy`, {
+//   repository: repo.repository.id,
+//   policy: JSON.stringify({
+//     Version: '2012-10-17',
+//     Statement: [
+//       {
+//         Effect: 'Allow',
+//         Principal: '*',
+//         Action: [
+//           'ecr:GetDownloadUrlForLayer',
+//           'ecr:BatchGetImage',
+//           'ecr:BatchCheckLayerAvailability',
+//           'ecr:PutImage',
+//           'ecr:InitiateLayerUpload',
+//           'ecr:UploadLayerPart',
+//           'ecr:CompleteLayerUpload',
+//           'ecr:DescribeRepositories',
+//           'ecr:GetRepositoryPolicy',
+//           'ecr:ListImages',
+//           'ecr:DeleteRepository',
+//           'ecr:BatchDeleteImage',
+//           'ecr:SetRepositoryPolicy',
+//           'ecr:DeleteRepositoryPolicy',
+//         ],
+//       },
+//     ],
+//   }),
+// });
+
+new aws.ecr.LifecyclePolicy(`${RESOURCE_PREFIX}-lifecycle-policy`, {
+  repository: repo.repository.id,
+  policy: JSON.stringify({
+    rules: [
+      {
+        rulePriority: 1,
+        description: 'Expire images older than 14 days',
+        selection: {
+          tagStatus: 'untagged',
+          countType: 'sinceImagePushed',
+          countUnit: 'days',
+          countNumber: 14,
+        },
+        action: {
+          type: 'expire',
+        },
+      },
+    ],
+  }),
+});
+
 const image = new awsx.ecr.Image(`${RESOURCE_PREFIX}-image`, {
   repositoryUrl: repo.url,
   context: '../',
+  imageTag,
   platform: 'linux/amd64',
+});
+
+// ---------------- NETWORK ----------------
+const natEip = new aws.ec2.Eip(`${RESOURCE_PREFIX}-eip`);
+
+// Мережа: дефолтний VPC і сабнети
+const { vpc } = new awsx.ec2.Vpc(`${RESOURCE_PREFIX}-vpc`, {
+  numberOfAvailabilityZones: 2,
+  natGateways: { strategy: 'Single' },
+});
+
+const publicSubnets = aws.ec2.getSubnetsOutput({
+  filters: [
+    {
+      name: 'vpc-id',
+      values: [vpc.id],
+    },
+  ],
+});
+
+new aws.ec2.NatGateway(`${RESOURCE_PREFIX}-nat-gateway`, {
+  allocationId: natEip.id,
+  subnetId: publicSubnets.ids.apply((ids) => ids[0]),
+});
+
+// SG для доступу на 80/tcp
+const sg = new aws.ec2.SecurityGroup(`${RESOURCE_PREFIX}-sg`, {
+  vpcId: vpc.id,
+  ingress: [
+    {
+      protocol: 'tcp',
+      fromPort: 80,
+      toPort: 80,
+      cidrBlocks: ['0.0.0.0/0'],
+    },
+  ],
+  egress: [
+    { protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] },
+  ],
 });
 
 const loadBalancer = new awsx.lb.ApplicationLoadBalancer(
   `${RESOURCE_PREFIX}-lb`,
+  {},
 );
 
 // ECS кластер
@@ -88,49 +180,30 @@ const taskRole = new aws.iam.Role(`${RESOURCE_PREFIX}-task-role`, {
   }),
 });
 
-const logGroup = pulumi.output(
-  new aws.cloudwatch.LogGroup(`${RESOURCE_PREFIX}-lg`, {
-    name: `/ecs/${APP_NAME}-${stack}`,
-    retentionInDays: 30,
-  }),
-);
+const ecsParamsDefinition = ecsParams.map((paramName) => {
+  return {
+    name: paramName,
+    valueFrom: `/${paramScope}/${paramName}`,
+  };
+});
 
-const logGroupArnWithStreams = logGroup.apply((lg) =>
-  awsUtil.createArtForService(AWS_SERVICES.LOGS, `${lg.name}:*`),
-);
-
-const execLogPolicy = aws.iam.getPolicyDocumentOutput({
-  statements: [
-    {
-      effect: 'Allow',
-      actions: [
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-        'logs:DescribeLogStreams',
-      ],
-      resources: [logGroupArnWithStreams],
-    },
-  ],
-}).json;
-
-new aws.iam.RolePolicy(`${RESOURCE_PREFIX}-exec-logs`, {
-  role: execRole.name,
-  policy: execLogPolicy,
+const cw = new CloudWatch({
+  resourceName: RESOURCE_PREFIX,
+  retentionInDays: 30,
+  service: 'ecs',
+  roleToAttachPolicy: pulumi.output(execRole),
 });
 
 // Опис контейнера з environmentFiles і secrets
 const container = pulumi
-  .all([logGroup.name, image, loadBalancer])
-  .apply(([lgName, image, lb]) =>
+  .all([cw.logGroup.name, image.imageUri, loadBalancer.defaultTargetGroup])
+  .apply(([lgName, imageUri, lbTargetGroup]) =>
     JSON.stringify([
       {
         name: 'api',
-        image: image.imageUri,
+        image: imageUri,
         essential: true,
-        portMappings: [
-          { containerPort: ECS_PORT, targetGroup: lb.defaultTargetGroup },
-        ],
-        environment: [{ name: 'NODE_ENV', value: stack }],
+        portMappings: [{ containerPort: ECS_PORT, targetGroup: lbTargetGroup }],
         secrets: [...ecsParamsDefinition],
         logConfiguration: {
           logDriver: 'awslogs',
@@ -170,44 +243,12 @@ const task = new aws.ecs.TaskDefinition(`${RESOURCE_PREFIX}-taskdef`, {
   containerDefinitions: container,
 });
 
-// Мережа: дефолтний VPC і сабнети
-const vpc = pulumi.output(aws.ec2.getVpc({ default: true }));
-const subnets = vpc.apply((c) =>
-  pulumi.output(
-    aws.ec2.getSubnets({
-      filters: [
-        {
-          name: 'vpc-id',
-          values: [c.id],
-        },
-      ],
-    }),
-  ),
-);
-
-// SG для доступу на 80/tcp
-const sg = new aws.ec2.SecurityGroup(`${RESOURCE_PREFIX}-sg`, {
-  vpcId: vpc.id,
-  ingress: [
-    {
-      protocol: 'tcp',
-      fromPort: 80,
-      toPort: 80,
-      cidrBlocks: ['0.0.0.0/0'],
-    },
-  ],
-  egress: [
-    { protocol: '-1', fromPort: 0, toPort: 0, cidrBlocks: ['0.0.0.0/0'] },
-  ],
-});
-
 // ECS Service без LB (для демо)
 const svc = new awsx.ecs.FargateService(`${RESOURCE_PREFIX}-svc`, {
   cluster: cluster.arn,
   taskDefinition: task.arn,
   networkConfiguration: {
-    assignPublicIp: true,
-    subnets: subnets.ids,
+    subnets: publicSubnets.ids,
     securityGroups: [sg.id],
   },
   deploymentCircuitBreaker: {

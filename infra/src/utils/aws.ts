@@ -1,5 +1,9 @@
 import { join } from 'node:path';
-import { GetCallerIdentityResult } from '@pulumi/aws';
+import {
+  config,
+  GetCallerIdentityResult,
+  getCallerIdentity,
+} from '@pulumi/aws';
 import * as pulumi from '@pulumi/pulumi';
 
 export enum AWS_SERVICES {
@@ -24,21 +28,25 @@ const CONFIG_BY_SERVICE: Record<AWS_SERVICES, ServiceConfig> = {
 };
 
 type AwsUtilArgs = {
-  region: pulumi.Input<string>;
-  awsIdentity: pulumi.Output<GetCallerIdentityResult>;
+  region?: pulumi.Input<string>;
+  awsIdentity?: pulumi.Output<GetCallerIdentityResult>;
 };
 
 export class AwsUtil {
   private region: pulumi.Input<string>;
   private awsIdentity: pulumi.Output<GetCallerIdentityResult>;
 
-  constructor({ region, awsIdentity }: AwsUtilArgs) {
-    if (!region || !awsIdentity) {
-      throw new Error('AWS region is not provided');
-    }
+  constructor({ region, awsIdentity }: AwsUtilArgs = {}) {
+    this.region = region || (this.getAwsRegion() as string);
+    this.awsIdentity = awsIdentity || this.getAwsIdentity();
+  }
 
-    this.region = region;
-    this.awsIdentity = awsIdentity;
+  private getAwsRegion() {
+    return config.region;
+  }
+
+  private getAwsIdentity() {
+    return pulumi.output(getCallerIdentity({}));
   }
 
   createArtForService(service: AWS_SERVICES, resourcePath: string) {

@@ -102,5 +102,6 @@ jobs:
               "target": { value: "live" },
               "aws:region": { value: ${{ vars.AWS_REGION }} },
               "app:image": { value: ${{ steps.build-image.outputs.IMAGE }} },
-              "app:name": { value: ${{ vars.API_APP_NAME }} }
+              "app:name": { value: ${{ vars.API_APP_NAME }} },
+              "grafanaAdminPassword": { value: ${{ vars.GRAFANA_ADMIN_PASSWORD }} }
             }
