@@ -53,4 +53,8 @@ describe('Token service', () => {
       testOutput(tokenService.createTokenPair, input);
     }
   });
+
+  test('broken test', () => {
+    expect(false).toBe(true);
+  });
 });
