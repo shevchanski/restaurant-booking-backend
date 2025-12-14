@@ -7,7 +7,7 @@ import { DatabaseConfig } from './configs/db.config';
 import serverConfig from './configs/server.config';
 import app from './express';
 
-console.log("NODE-env", process.env.NODE_ENV);
+console.log('NODE-env', process.env.NODE_ENV);
 
 // new changes to test CI | step #1
 // new changes for existing PR | step #2
