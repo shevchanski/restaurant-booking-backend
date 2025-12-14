@@ -1,2 +1,6 @@
 /bin/
 /node_modules/
+
+!Pulumi.prod.yaml
+!Pulumi.stg.yaml
+Pulumi.*.yaml
