@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:20-alpinee AS base # mistake in the name of base image, should be `node:20-alpine`
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
