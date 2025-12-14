@@ -12,7 +12,7 @@ import app from './express';
 // new changes to test CI | step #1
 // new changes for existing PR | step #2
 // new changes with mistake for existing PR | step #3
-// console.log(notDeclaredVar);
+console.log(notDeclaredVar);
 
 if (process.env.NODE_ENV !== 'test') {
   mongoose.set({ debug: true });
